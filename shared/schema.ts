@@ -128,6 +128,23 @@ export const documents = pgTable("documents", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Contact Messages table
+export const contactMessages = pgTable("contact_messages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name").notNull(),
+  email: varchar("email").notNull(),
+  phone: varchar("phone"),
+  subject: varchar("subject"),
+  message: text("message").notNull(),
+  status: varchar("status").notNull().default("unread"), // unread, read, replied, archived
+  priority: varchar("priority").notNull().default("normal"), // low, normal, high, urgent
+  assignedTo: varchar("assigned_to").references(() => users.id),
+  tags: jsonb("tags").default([]),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Audit Logs table
 export const auditLogs = pgTable("audit_logs", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -170,6 +187,9 @@ export type InsertClientToken = typeof clientTokens.$inferInsert;
 export type Document = typeof documents.$inferSelect;
 export type InsertDocument = typeof documents.$inferInsert;
 
+export type ContactMessage = typeof contactMessages.$inferSelect;
+export type InsertContactMessage = typeof contactMessages.$inferInsert;
+
 export type AuditLog = typeof auditLogs.$inferSelect;
 export type InsertAuditLog = typeof auditLogs.$inferInsert;
 
@@ -183,4 +203,5 @@ export const insertCommunicationSchema = createInsertSchema(communications);
 export const insertAiChatSchema = createInsertSchema(aiChats);
 export const insertClientTokenSchema = createInsertSchema(clientTokens);
 export const insertDocumentSchema = createInsertSchema(documents);
+export const insertContactMessageSchema = createInsertSchema(contactMessages);
 export const insertAuditLogSchema = createInsertSchema(auditLogs);

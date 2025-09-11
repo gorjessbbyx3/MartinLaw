@@ -7,31 +7,36 @@ import {
   communications,
   aiChats,
   clientTokens,
-  auditLogs,
   documents,
-  type User,
-  type InsertUser,
-  type Client,
-  type InsertClient,
-  type Consultation,
-  type InsertConsultation,
-  type Case,
-  type InsertCase,
-  type Invoice,
-  type InsertInvoice,
-  type Communication,
-  type InsertCommunication,
-  type AiChat,
-  type InsertAiChat,
-  type ClientToken,
-  type InsertClientToken,
-  type AuditLog,
-  type InsertAuditLog,
-  type Document,
-  type InsertDocument,
+  auditLogs,
+  contactMessages
+} from "@shared/schema";
+import type {
+  InsertUser,
+  User,
+  InsertClient,
+  Client,
+  InsertConsultation,
+  Consultation,
+  InsertCase,
+  Case,
+  InsertInvoice,
+  Invoice,
+  InsertCommunication,
+  Communication,
+  InsertAiChat,
+  AiChat,
+  InsertClientToken,
+  ClientToken,
+  InsertDocument,
+  Document,
+  InsertAuditLog,
+  AuditLog,
+  InsertContactMessage,
+  ContactMessage
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and, or, ilike, lt } from "drizzle-orm";
+import { eq, desc, and, or, ilike, lt, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -100,6 +105,15 @@ export interface IStorage {
   getRecentAuditLogs(limit?: number): Promise<AuditLog[]>;
   getAuditLogsByUser(userId: string, limit?: number): Promise<AuditLog[]>;
   getAuditLogsByResource(resourceType: string, resourceId: string, limit?: number): Promise<AuditLog[]>;
+
+  // Contact Message operations
+  getAllContactMessages(): Promise<ContactMessage[]>;
+  getContactMessage(id: string): Promise<ContactMessage | null>;
+  createContactMessage(data: InsertContactMessage): Promise<ContactMessage>;
+  updateContactMessage(id: string, data: Partial<InsertContactMessage>): Promise<ContactMessage>;
+  deleteContactMessage(id: string): Promise<void>;
+  markContactMessageAsRead(id: string): Promise<ContactMessage>;
+  getUnreadContactMessagesCount(): Promise<number>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -290,8 +304,50 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteExpiredTokens(): Promise<void> {
-    await db.delete(clientTokens).where(lt(clientTokens.expiresAt, new Date()));
-  }
+    await db.delete(clientTokens).where(sql`expires_at < NOW()`);
+  },
+
+  // Contact Messages
+  async getAllContactMessages(): Promise<ContactMessage[]> {
+    return await db.select().from(contactMessages).orderBy(desc(contactMessages.createdAt));
+  },
+
+  async getContactMessage(id: string): Promise<ContactMessage | null> {
+    const result = await db.select().from(contactMessages).where(eq(contactMessages.id, id));
+    return result[0] || null;
+  },
+
+  async createContactMessage(data: InsertContactMessage): Promise<ContactMessage> {
+    const result = await db.insert(contactMessages).values(data).returning();
+    return result[0];
+  },
+
+  async updateContactMessage(id: string, data: Partial<InsertContactMessage>): Promise<ContactMessage> {
+    const result = await db.update(contactMessages)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(contactMessages.id, id))
+      .returning();
+    return result[0];
+  },
+
+  async deleteContactMessage(id: string): Promise<void> {
+    await db.delete(contactMessages).where(eq(contactMessages.id, id));
+  },
+
+  async markContactMessageAsRead(id: string): Promise<ContactMessage> {
+    const result = await db.update(contactMessages)
+      .set({ status: "read", updatedAt: new Date() })
+      .where(eq(contactMessages.id, id))
+      .returning();
+    return result[0];
+  },
+
+  async getUnreadContactMessagesCount(): Promise<number> {
+    const result = await db.select({ count: sql<number>`count(*)` })
+      .from(contactMessages)
+      .where(eq(contactMessages.status, "unread"));
+    return result[0]?.count || 0;
+  },
 
   // AI Chat operations
   async getAiChat(sessionId: string): Promise<AiChat | undefined> {
@@ -361,8 +417,6 @@ export class DatabaseStorage implements IStorage {
       'cvv', 'secret', 'apiKey', 'authToken', 'accessToken', 'refreshToken'
     ];
 
-    const sanitized = { ...details };
-
     const redactSensitive = (obj: any, path = ''): any => {
       if (!obj || typeof obj !== 'object') {
         return obj;
@@ -376,14 +430,14 @@ export class DatabaseStorage implements IStorage {
       for (const [key, value] of Object.entries(result)) {
         const lowercaseKey = key.toLowerCase();
         const shouldRedact = sensitiveFields.some(field => lowercaseKey.includes(field));
-        
+
         if (shouldRedact) {
           result[key] = '[REDACTED]';
         } else if (typeof value === 'object' && value !== null) {
           result[key] = redactSensitive(value, `${path}.${key}`);
         }
       }
-      
+
       return result;
     };
 
@@ -399,7 +453,7 @@ export class DatabaseStorage implements IStorage {
     meta?: { ip?: string; userAgent?: string }
   ): Promise<AuditLog> {
     const sanitizedDetails = this.sanitizeAuditDetails(details);
-    
+
     const auditData: InsertAuditLog = {
       userId,
       action,
@@ -453,22 +507,22 @@ export class DatabaseStorage implements IStorage {
 
   async listDocuments(filter?: { clientId?: string; caseId?: string; category?: string; q?: string }): Promise<Document[]> {
     let query = db.select().from(documents);
-    
+
     if (filter) {
       const conditions = [];
-      
+
       if (filter.clientId) {
         conditions.push(eq(documents.clientId, filter.clientId));
       }
-      
+
       if (filter.caseId) {
         conditions.push(eq(documents.caseId, filter.caseId));
       }
-      
+
       if (filter.category) {
         conditions.push(eq(documents.category, filter.category));
       }
-      
+
       if (filter.q) {
         conditions.push(or(
           ilike(documents.originalName, `%${filter.q}%`),
@@ -476,12 +530,12 @@ export class DatabaseStorage implements IStorage {
           ilike(documents.category, `%${filter.q}%`)
         ));
       }
-      
+
       if (conditions.length > 0) {
         query = query.where(and(...conditions)) as any;
       }
     }
-    
+
     return await query.orderBy(desc(documents.createdAt));
   }
 

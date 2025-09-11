@@ -1,7 +1,7 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertClientSchema, insertConsultationSchema, insertCaseSchema, insertInvoiceSchema, insertDocumentSchema } from "@shared/schema";
+import { insertClientSchema, insertConsultationSchema, insertCaseSchema, insertInvoiceSchema, insertDocumentSchema, insertContactMessageSchema } from "@shared/schema";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { grokLegalAssistant } from "./grok";
@@ -202,6 +202,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Get consultations error:", error);
       res.status(500).json({ message: "Failed to fetch consultations" });
+    }
+  });
+
+  // Contact form submission (public endpoint)
+  app.post("/api/contact", async (req, res) => {
+    try {
+      const contactData = insertContactMessageSchema.parse(req.body);
+      const message = await storage.createContactMessage(contactData);
+      res.status(201).json({ message: "Message sent successfully", id: message.id });
+    } catch (error) {
+      console.error("Contact form submission error:", error);
+      res.status(400).json({ message: "Invalid contact data" });
     }
   });
 
@@ -706,6 +718,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Update profile error:", error);
       res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
+  // Contact Messages routes
+  app.get("/api/contact-messages", authenticateToken, requireAdminRole, async (req, res) => {
+    try {
+      const messages = await storage.getAllContactMessages();
+      res.json(messages);
+    } catch (error) {
+      console.error("Get contact messages error:", error);
+      res.status(500).json({ message: "Failed to fetch contact messages" });
+    }
+  });
+
+  app.get("/api/contact-messages/:id", authenticateToken, requireAdminRole, async (req, res) => {
+    try {
+      const message = await storage.getContactMessage(req.params.id);
+      if (!message) {
+        return res.status(404).json({ message: "Contact message not found" });
+      }
+      res.json(message);
+    } catch (error) {
+      console.error("Get contact message error:", error);
+      res.status(500).json({ message: "Failed to fetch contact message" });
+    }
+  });
+
+  app.put("/api/contact-messages/:id", authenticateToken, requireAdminRole, async (req, res) => {
+    try {
+      const updateData = insertContactMessageSchema.partial().parse(req.body);
+      const message = await storage.updateContactMessage(req.params.id, updateData);
+      res.json(message);
+    } catch (error) {
+      console.error("Update contact message error:", error);
+      res.status(400).json({ message: "Invalid contact message data" });
+    }
+  });
+
+  app.put("/api/contact-messages/:id/read", authenticateToken, requireAdminRole, async (req, res) => {
+    try {
+      const message = await storage.markContactMessageAsRead(req.params.id);
+      res.json(message);
+    } catch (error) {
+      console.error("Mark contact message as read error:", error);
+      res.status(500).json({ message: "Failed to mark message as read" });
+    }
+  });
+
+  app.delete("/api/contact-messages/:id", authenticateToken, requireAdminRole, async (req, res) => {
+    try {
+      await storage.deleteContactMessage(req.params.id);
+      res.json({ message: "Contact message deleted successfully" });
+    } catch (error) {
+      console.error("Delete contact message error:", error);
+      res.status(500).json({ message: "Failed to delete contact message" });
+    }
+  });
+
+  app.get("/api/contact-messages/stats/unread-count", authenticateToken, requireAdminRole, async (req, res) => {
+    try {
+      const count = await storage.getUnreadContactMessagesCount();
+      res.json({ count });
+    } catch (error) {
+      console.error("Get unread count error:", error);
+      res.status(500).json({ message: "Failed to get unread count" });
     }
   });
 
