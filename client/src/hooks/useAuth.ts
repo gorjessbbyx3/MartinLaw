@@ -4,6 +4,7 @@ interface User {
   id: string;
   email: string;
   role: string;
+  profilePhoto?: string;
 }
 
 export function useAuth() {

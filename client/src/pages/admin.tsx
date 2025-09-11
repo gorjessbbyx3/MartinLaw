@@ -11,7 +11,7 @@ import { Consultations } from "@/components/admin/consultations";
 import { Cases } from "@/components/admin/cases";
 import { Invoices } from "@/components/admin/invoices";
 import { Documents } from "@/components/admin/documents";
-import { Users, Calendar, Briefcase, FileText, LogOut, Scale, Upload } from "lucide-react";
+import { Users, Calendar, Briefcase, FileText, LogOut, Scale, User } from "lucide-react";
 
 export default function Admin() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -119,8 +119,16 @@ export default function Admin() {
               className="flex items-center space-x-2 data-[state=active]:bg-navy-900 data-[state=active]:text-white"
               data-testid="tab-documents"
             >
-              <Upload className="h-4 w-4" />
+              <FileText className="h-4 w-4" />
               <span className="hidden sm:inline">Documents</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="profile" 
+              className="flex items-center space-x-2 data-[state=active]:bg-navy-900 data-[state=active]:text-white"
+              data-testid="tab-profile"
+            >
+              <User className="h-4 w-4" />
+              <span className="hidden sm:inline">Profile</span>
             </TabsTrigger>
           </TabsList>
 
@@ -146,6 +154,10 @@ export default function Admin() {
 
           <TabsContent value="documents" data-testid="content-documents">
             <Documents />
+          </TabsContent>
+
+          <TabsContent value="profile" data-testid="content-profile">
+            <ProfileSettings />
           </TabsContent>
         </Tabs>
       </div>

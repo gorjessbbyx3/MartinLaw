@@ -499,6 +499,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Profile routes
+  app.get("/api/auth/user", authenticateToken, async (req, res) => {
+    try {
+      const user = await storage.getUser(req.user!.userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      res.json({ 
+        id: user.id, 
+        email: user.email, 
+        role: user.role,
+        profilePhoto: user.profilePhoto 
+      });
+    } catch (error) {
+      console.error("Get user profile error:", error);
+      res.status(500).json({ message: "Failed to fetch user profile" });
+    }
+  });
+
+  app.put("/api/auth/profile", authenticateToken, async (req, res) => {
+    try {
+      const { profilePhoto } = req.body;
+      const user = await storage.updateUser(req.user!.userId, { profilePhoto });
+      
+      res.json({ 
+        id: user.id, 
+        email: user.email, 
+        role: user.role,
+        profilePhoto: user.profilePhoto 
+      });
+    } catch (error) {
+      console.error("Update profile error:", error);
+      res.status(500).json({ message: "Failed to update profile" });
+    }
+  });
+
   // Token cleanup endpoint (for admin use)
   app.post("/api/admin/cleanup-tokens", authenticateToken, requireAdminRole, async (req, res) => {
     try {
