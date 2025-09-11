@@ -69,6 +69,30 @@
   --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  
+  /* Navy Color Scale */
+  --navy-50: #f8fafc;
+  --navy-100: #f1f5f9;
+  --navy-200: #e2e8f0;
+  --navy-300: #cbd5e1;
+  --navy-400: #94a3b8;
+  --navy-500: #64748b;
+  --navy-600: #475569;
+  --navy-700: #334155;
+  --navy-800: #1e293b;
+  --navy-900: #0f172a;
+  
+  /* Gold Color Scale */
+  --gold-50: #fefdf8;
+  --gold-100: #fdf4e6;
+  --gold-200: #fce7c0;
+  --gold-300: #fad089;
+  --gold-400: #f7b955;
+  --gold-500: #f59e0b;
+  --gold-600: #d97706;
+  --gold-700: #b45309;
+  --gold-800: #92400e;
+  --gold-900: #78350f;
 }
 
 @layer base {
@@ -258,5 +282,60 @@
 
   .dark .mobile-menu-content {
     background: linear-gradient(135deg, rgba(30, 30, 40, 0.95) 0%, rgba(20, 20, 30, 0.9) 100%);
+  }
+
+  /* Gold button styles */
+  .btn-gold {
+    @apply text-white px-8 py-4 rounded-2xl font-semibold tracking-wide transition-all duration-300 relative overflow-hidden;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: 
+      0 8px 32px rgba(245, 158, 11, 0.3),
+      0 4px 16px rgba(217, 119, 6, 0.2);
+  }
+  
+  .btn-gold:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 
+      0 12px 40px rgba(245, 158, 11, 0.4),
+      0 8px 24px rgba(217, 119, 6, 0.3);
+    background: linear-gradient(135deg, #f7b955 0%, #f59e0b 100%);
+  }
+
+  /* Typography styles */
+  .typography-h2 {
+    @apply text-4xl lg:text-5xl font-serif font-bold leading-tight;
+  }
+
+  .typography-light {
+    @apply font-light;
+  }
+
+  .typography-lead {
+    @apply text-lg lg:text-xl leading-relaxed;
+  }
+
+  .typography-subtitle {
+    @apply text-lg font-semibold;
+  }
+
+  .typography-body {
+    @apply text-base leading-relaxed;
+  }
+
+  .typography-body-small {
+    @apply text-sm leading-relaxed;
+  }
+
+  .typography-overline {
+    @apply text-xs font-bold uppercase tracking-widest;
+  }
+
+  .typography-button {
+    @apply font-semibold tracking-wide;
+  }
+
+  /* Section padding utility */
+  .section-padding {
+    @apply py-20 lg:py-32;
   }
 }
