@@ -1,6 +1,6 @@
 
-import { db } from './db';
-import { sql } from "drizzle-orm";
+// Reference: javascript_sendgrid integration blueprint
+import { MailService } from '@sendgrid/mail';
 
 interface EmailParams {
   to: string;
@@ -13,22 +13,25 @@ interface EmailParams {
 const FROM_EMAIL = process.env.FROM_EMAIL || "noreply@masonmartinlaw.com";
 const FROM_NAME = "Mason Martin Law";
 
+// Initialize SendGrid service
+let mailService: MailService | null = null;
+
+// Initialize SendGrid if API key is available
+if (process.env.SENDGRID_API_KEY) {
+  try {
+    mailService = new MailService();
+    mailService.setApiKey(process.env.SENDGRID_API_KEY);
+    console.log('SendGrid email service initialized');
+  } catch (error) {
+    console.error('Failed to initialize SendGrid:', error);
+  }
+}
+
 export async function sendEmail(params: EmailParams): Promise<boolean> {
   try {
-    // Use Neon's built-in email service through the database
-    // This leverages Neon's serverless email functionality
-    const emailData = {
-      to: params.to,
-      from: `${FROM_NAME} <${params.from}>`,
-      subject: params.subject,
-      text: params.text || '',
-      html: params.html || '',
-      timestamp: new Date().toISOString()
-    };
-
-    // If no email configuration is available, log for development
-    if (!process.env.DATABASE_URL) {
-      console.log("Email would be sent:", {
+    // If SendGrid is not configured, fall back to development logging
+    if (!mailService || !process.env.SENDGRID_API_KEY) {
+      console.log("SendGrid not configured - email would be sent:", {
         to: params.to,
         from: params.from,
         subject: params.subject,
@@ -37,18 +40,22 @@ export async function sendEmail(params: EmailParams): Promise<boolean> {
       return true;
     }
 
-    // Use Neon's email service through database connection
-    await db.execute(sql`
-      SELECT pg_notify('email_queue', ${JSON.stringify(emailData)})
-    `);
+    // Send email using SendGrid
+    await mailService.send({
+      to: params.to,
+      from: `${FROM_NAME} <${params.from}>`,
+      subject: params.subject,
+      text: params.text || '',
+      html: params.html || '',
+    });
     
-    console.log(`Email queued successfully to ${params.to}`);
+    console.log(`Email sent successfully to ${params.to}`);
     return true;
   } catch (error) {
-    console.error('Email sending error:', error);
+    console.error('SendGrid email error:', error);
     
-    // Fallback to console logging in development
-    console.log("Email would be sent:", {
+    // Fallback to console logging to not block application flow
+    console.log("Email failed to send but would contain:", {
       to: params.to,
       from: params.from,
       subject: params.subject,
