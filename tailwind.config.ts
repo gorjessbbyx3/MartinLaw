@@ -60,6 +60,18 @@ export default {
           400: "var(--bronze-400)",
           500: "var(--bronze-500)",
           600: "var(--bronze-600)"
+        },
+        silicon: {
+          blue: "var(--silicon-blue)",
+          purple: "var(--silicon-purple)",
+          pink: "var(--silicon-pink)",
+          green: "var(--silicon-green)",
+          orange: "var(--silicon-orange)"
+        },
+        gradient: {
+          primary: "var(--gradient-primary)",
+          secondary: "var(--gradient-secondary)",
+          accent: "var(--gradient-accent)"
         }
       },
       fontFamily: {
