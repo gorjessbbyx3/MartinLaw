@@ -4,24 +4,13 @@ import {
   consultations,
   cases,
   invoices,
-  communications,
-  aiChats,
   clientTokens,
-  type User,
   type InsertUser,
-  type Client,
   type InsertClient,
-  type Consultation,
   type InsertConsultation,
-  type Case,
   type InsertCase,
-  type Invoice,
   type InsertInvoice,
-  type Communication,
-  type InsertCommunication,
-  type AiChat,
-  type InsertAiChat,
-  type ClientToken,
+  type InsertClientToken,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and } from "drizzle-orm";
@@ -64,11 +53,6 @@ export interface IStorage {
   getCommunicationsByClient(clientId: string): Promise<Communication[]>;
   getCommunicationsByCase(caseId: string): Promise<Communication[]>;
   createCommunication(communication: InsertCommunication): Promise<Communication>;
-
-  // AI Chat operations
-  getAiChat(sessionId: string): Promise<AiChat | undefined>;
-  createAiChat(chat: InsertAiChat): Promise<AiChat>;
-  updateAiChat(sessionId: string, chat: Partial<InsertAiChat>): Promise<AiChat>;
 
   // Client token operations
   getClientToken(token: string): Promise<ClientToken | undefined>;
@@ -238,26 +222,6 @@ export class DatabaseStorage implements IStorage {
   async createCommunication(communicationData: InsertCommunication): Promise<Communication> {
     const [communication] = await db.insert(communications).values(communicationData).returning();
     return communication;
-  }
-
-  // AI Chat operations
-  async getAiChat(sessionId: string): Promise<AiChat | undefined> {
-    const [chat] = await db.select().from(aiChats).where(eq(aiChats.sessionId, sessionId));
-    return chat;
-  }
-
-  async createAiChat(chatData: InsertAiChat): Promise<AiChat> {
-    const [chat] = await db.insert(aiChats).values(chatData).returning();
-    return chat;
-  }
-
-  async updateAiChat(sessionId: string, chatData: Partial<InsertAiChat>): Promise<AiChat> {
-    const [chat] = await db
-      .update(aiChats)
-      .set({ ...chatData, updatedAt: new Date() })
-      .where(eq(aiChats.sessionId, sessionId))
-      .returning();
-    return chat;
   }
 
   // Client token operations
