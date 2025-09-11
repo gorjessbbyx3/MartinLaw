@@ -53,7 +53,7 @@ export function PracticeAreas() {
             >
               <CardContent className="p-0">
                 <div className="text-navy-500 mb-6 transform group-hover:scale-110 transition-transform duration-300">
-                  {area.icon}
+                  <area.icon className="w-8 h-8" />
                 </div>
                 <h3 className="text-2xl font-bold text-navy-900 mb-4 group-hover:text-navy-700 transition-colors">
                   {area.title}
