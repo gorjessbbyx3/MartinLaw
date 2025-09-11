@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { useLocation } from "wouter";
@@ -11,6 +11,7 @@ import { Consultations } from "@/components/admin/consultations";
 import { Cases } from "@/components/admin/cases";
 import { Invoices } from "@/components/admin/invoices";
 import { Documents } from "@/components/admin/documents";
+import ProfileSettings from "@/components/admin/profile-settings";
 import { Users, Calendar, Briefcase, FileText, LogOut, Scale, User } from "lucide-react";
 
 export default function Admin() {
@@ -18,11 +19,12 @@ export default function Admin() {
   const [, setLocation] = useLocation();
   const [activeTab, setActiveTab] = useState("dashboard");
 
-  // Redirect to login if not authenticated
-  if (!isLoading && !isAuthenticated) {
-    setLocation("/admin-login");
-    return null;
-  }
+  // Redirect to login if not authenticated using useEffect
+  useEffect(() => {
+    if (!isLoading && !isAuthenticated) {
+      setLocation("/admin-login");
+    }
+  }, [isLoading, isAuthenticated, setLocation]);
 
   if (isLoading) {
     return (
