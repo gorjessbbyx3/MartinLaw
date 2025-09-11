@@ -22,7 +22,10 @@ export default function Admin() {
   // Redirect to login if not authenticated using useEffect
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      setLocation("/admin-login");
+      // Defer the redirect to avoid state update during render
+      setTimeout(() => {
+        setLocation("/admin-login");
+      }, 0);
     }
   }, [isLoading, isAuthenticated, setLocation]);
 
