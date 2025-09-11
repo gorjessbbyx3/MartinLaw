@@ -88,7 +88,7 @@
   }
   
   .simple-card:hover {
-    @apply border-border/80 bg-card/80;
+    @apply border-muted bg-muted/50;
   }
   
   .animate-fade-in {
