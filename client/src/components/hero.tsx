@@ -11,7 +11,7 @@ export function Hero() {
   };
 
   return (
-    <section id="home" className="hero-gradient text-white py-32 lg:py-48 xl:py-56 relative overflow-hidden">
+    <section id="home" className="hero-gradient text-white py-16 lg:py-24 relative overflow-hidden">
       {/* Sophisticated Background Elements */}
       <div className="absolute inset-0">
         {/* Primary Pattern */}
@@ -28,7 +28,7 @@ export function Hero() {
       <div className="container-custom relative z-10">
         <div className="grid lg:grid-cols-12 gap-12 xl:gap-16 items-center min-h-[70vh]">
           {/* Premium Content Section */}
-          <div className="lg:col-span-7 xl:col-span-6 animate-fade-in space-y-8">
+          <div className="lg:col-span-7 xl:col-span-6 animate-fade-in space-y-6">
             {/* Exclusive Status Badge */}
             <div className="inline-flex items-center gap-3 glass-effect rounded-2xl px-8 py-4 border border-bronze-500/20 backdrop-blur-lg">
               <div className="relative">
@@ -39,23 +39,23 @@ export function Hero() {
             </div>
 
             {/* Premium Headline */}
-            <div className="space-y-6">
-              <h1 className="typography-hero-lg typography-light leading-[0.95] tracking-tighter">
+            <div className="space-y-4">
+              <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold leading-tight tracking-tighter text-white">
                 Premier Litigation
                 <span className="block text-bronze-500 font-black">Attorney</span>
-                <span className="block text-platinum-300 font-light text-6xl lg:text-7xl">Honolulu, Hawaii</span>
+                <span className="block text-platinum-300 font-light text-3xl lg:text-4xl">Honolulu, Hawaii</span>
               </h1>
               
               {/* Elegant Subheadline */}
               <div className="w-24 h-1 bg-gradient-to-r from-bronze-500 to-bronze-600 rounded-full mb-6"></div>
-              <p className="typography-lead typography-light max-w-2xl leading-relaxed text-xl">
+              <p className="text-lg leading-relaxed max-w-2xl text-white">
                 <span className="text-bronze-500 font-medium">25+ years</span> of distinguished trial excellence across state, federal, territorial and military courts. 
                 <span className="block mt-2 text-platinum-300">Delivering results for Hawaii's most discerning clients.</span>
               </p>
             </div>
 
             {/* Premium Call-to-Action Section */}
-            <div className="space-y-8 pt-4">
+            <div className="space-y-6 pt-4">
               <div className="flex flex-col sm:flex-row gap-6">
                 <Button 
                   onClick={() => scrollToSection('consultation')} 
@@ -95,7 +95,7 @@ export function Hero() {
             </div>
 
             {/* Premium Credentials */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-8 border-t border-platinum-300/20">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-platinum-300/20">
               <div className="flex items-center space-x-3 group">
                 <div className="p-3 rounded-xl bg-bronze-500/10 border border-bronze-500/20 group-hover:bg-bronze-500/20 transition-colors duration-300">
                   <Award className="h-6 w-6 text-bronze-500" />

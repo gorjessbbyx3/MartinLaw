@@ -68,32 +68,32 @@ export function ContactForm() {
   return (
     <div className="animate-fade-in">
       {/* Premium Header Section */}
-      <div className="text-center mb-20">
+      <div className="text-center mb-16">
         <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl mb-8 relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-br from-charcoal-900 via-charcoal-700 to-charcoal-500 opacity-90"></div>
           <div className="absolute inset-0 bg-gradient-to-br from-bronze-500/20 via-transparent to-bronze-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           <MessageSquare className="h-10 w-10 text-white relative z-10 transform group-hover:scale-110 transition-transform duration-300" />
         </div>
-        <h2 className="typography-h1 mb-6" data-testid="text-contact-title">
+        <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold mb-6" data-testid="text-contact-title">
           Contact <span className="text-gradient">Our Office</span>
         </h2>
-        <p className="typography-lead text-charcoal-500 max-w-4xl mx-auto leading-relaxed" data-testid="text-contact-description">
+        <p className="text-lg text-charcoal-500 max-w-4xl mx-auto leading-relaxed" data-testid="text-contact-description">
           Experience personalized legal service with multiple convenient ways to connect with our team. 
           We're committed to responding promptly and professionally to every inquiry.
         </p>
       </div>
       
       {/* Premium Contact Information Cards */}
-      <div className="grid lg:grid-cols-3 gap-8 mb-24">
+      <div className="grid lg:grid-cols-3 gap-6 mb-16">
         {/* Office Location Card */}
-        <div className="card-hover group relative bg-gradient-to-br from-white via-charcoal-50/50 to-platinum-100/30 p-10 rounded-3xl border border-platinum-300/50 shadow-lg hover:shadow-2xl transition-all duration-500" data-testid="card-office-location">
+        <div className="card-hover group relative bg-gradient-to-br from-white via-charcoal-50/50 to-platinum-100/30 p-8 rounded-3xl border border-platinum-300/50 shadow-lg hover:shadow-2xl transition-all duration-500" data-testid="card-office-location">
           <div className="absolute inset-0 bg-gradient-to-br from-bronze-500/5 via-transparent to-bronze-600/10 opacity-0 group-hover:opacity-100 rounded-3xl transition-all duration-500"></div>
           <div className="relative z-10 text-center">
             <div className="w-20 h-20 mx-auto mb-8 rounded-2xl bg-gradient-to-br from-charcoal-900 to-charcoal-700 flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-bronze-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <MapPin className="h-10 w-10 text-white relative z-10 transform group-hover:scale-110 transition-transform duration-300" />
             </div>
-            <h3 className="typography-h3 mb-6 text-charcoal-900" data-testid="text-office-location">Premium Office Location</h3>
+            <h3 className="text-xl lg:text-2xl font-semibold mb-4 text-charcoal-900" data-testid="text-office-location">Premium Office Location</h3>
             <div className="space-y-3" data-testid="text-office-address">
               <p className="typography-body text-charcoal-700 font-medium">Downtown Honolulu</p>
               <p className="typography-body text-charcoal-700">Hawaii 96813</p>
@@ -106,14 +106,14 @@ export function ContactForm() {
         </div>
         
         {/* Phone Card */}
-        <div className="card-hover group relative bg-gradient-to-br from-white via-charcoal-50/50 to-platinum-100/30 p-10 rounded-3xl border border-platinum-300/50 shadow-lg hover:shadow-2xl transition-all duration-500" data-testid="card-phone">
+        <div className="card-hover group relative bg-gradient-to-br from-white via-charcoal-50/50 to-platinum-100/30 p-8 rounded-3xl border border-platinum-300/50 shadow-lg hover:shadow-2xl transition-all duration-500" data-testid="card-phone">
           <div className="absolute inset-0 bg-gradient-to-br from-bronze-500/5 via-transparent to-bronze-600/10 opacity-0 group-hover:opacity-100 rounded-3xl transition-all duration-500"></div>
           <div className="relative z-10 text-center">
             <div className="w-20 h-20 mx-auto mb-8 rounded-2xl bg-gradient-to-br from-bronze-500 to-bronze-600 flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <Phone className="h-10 w-10 text-charcoal-900 relative z-10 transform group-hover:scale-110 transition-transform duration-300" />
             </div>
-            <h3 className="typography-h3 mb-6 text-charcoal-900" data-testid="text-phone-title">Direct Phone Line</h3>
+            <h3 className="text-xl lg:text-2xl font-semibold mb-4 text-charcoal-900" data-testid="text-phone-title">Direct Phone Line</h3>
             <div className="space-y-4">
               <a 
                 href="tel:+18085551234" 
@@ -133,14 +133,14 @@ export function ContactForm() {
         </div>
         
         {/* Email Card */}
-        <div className="card-hover group relative bg-gradient-to-br from-white via-charcoal-50/50 to-platinum-100/30 p-10 rounded-3xl border border-platinum-300/50 shadow-lg hover:shadow-2xl transition-all duration-500" data-testid="card-email">
+        <div className="card-hover group relative bg-gradient-to-br from-white via-charcoal-50/50 to-platinum-100/30 p-8 rounded-3xl border border-platinum-300/50 shadow-lg hover:shadow-2xl transition-all duration-500" data-testid="card-email">
           <div className="absolute inset-0 bg-gradient-to-br from-bronze-500/5 via-transparent to-bronze-600/10 opacity-0 group-hover:opacity-100 rounded-3xl transition-all duration-500"></div>
           <div className="relative z-10 text-center">
             <div className="w-20 h-20 mx-auto mb-8 rounded-2xl bg-gradient-to-br from-charcoal-900 to-charcoal-700 flex items-center justify-center shadow-xl group-hover:shadow-2xl transition-all duration-300 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-bronze-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <Mail className="h-10 w-10 text-white relative z-10 transform group-hover:scale-110 transition-transform duration-300" />
             </div>
-            <h3 className="typography-h3 mb-6 text-charcoal-900" data-testid="text-email-title">Professional Email</h3>
+            <h3 className="text-xl lg:text-2xl font-semibold mb-4 text-charcoal-900" data-testid="text-email-title">Professional Email</h3>
             <div className="space-y-4">
               <a 
                 href="mailto:mason@masonmartinlaw.com" 
@@ -167,18 +167,18 @@ export function ContactForm() {
           <div className="absolute inset-0 bg-gradient-to-br from-charcoal-50 via-white to-platinum-100/50 rounded-3xl"></div>
           <div className="absolute inset-0 bg-gradient-to-br from-bronze-500/3 via-transparent to-bronze-600/5 rounded-3xl"></div>
           
-          <Card className="relative bg-white/70 backdrop-blur-sm p-12 lg:p-16 rounded-3xl border border-platinum-300/50 shadow-2xl" data-testid="card-contact-form">
+          <Card className="relative bg-white/70 backdrop-blur-sm p-8 lg:p-12 rounded-3xl border border-platinum-300/50 shadow-2xl" data-testid="card-contact-form">
             {/* Premium Form Header */}
-            <div className="text-center mb-12">
-              <h3 className="typography-h2 mb-4 text-charcoal-900" data-testid="text-send-message-title">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl lg:text-3xl font-bold mb-4 text-charcoal-900" data-testid="text-send-message-title">
                 Send a <span className="text-gradient">Confidential Message</span>
               </h3>
-              <p className="typography-body text-charcoal-500 max-w-2xl mx-auto">
+              <p className="text-base text-charcoal-500 max-w-2xl mx-auto">
                 Share the details of your legal matter with complete confidentiality. We'll respond with a personalized consultation plan.
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-8">
+            <form onSubmit={handleSubmit} className="space-y-6">
               {/* Premium Form Grid */}
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Name Field */}

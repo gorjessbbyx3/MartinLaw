@@ -39,7 +39,7 @@ export function PracticeAreas() {
   ];
 
   return (
-    <section id="practice-areas" className="section-padding relative overflow-hidden">
+    <section id="practice-areas" className="py-16 lg:py-20 relative overflow-hidden">
       {/* Premium Background Elements */}
       <div className="absolute inset-0">
         <div className="absolute inset-0 bg-gradient-to-br from-platinum-100 via-white to-charcoal-50/20"></div>
@@ -50,7 +50,7 @@ export function PracticeAreas() {
 
       <div className="container-custom relative z-10">
         {/* Premium Section Header */}
-        <div className="text-center mb-24 animate-fade-in">
+        <div className="text-center mb-16 animate-fade-in">
           <div className="inline-flex items-center gap-3 glass-effect rounded-2xl px-8 py-4 mb-8 border border-bronze-500/20">
             <div className="relative">
               <div className="w-3 h-3 bg-bronze-500 rounded-full animate-pulse"></div>
@@ -60,20 +60,20 @@ export function PracticeAreas() {
             <span className="typography-overline text-bronze-500 tracking-wider">Legal Expertise</span>
           </div>
           
-          <h2 className="typography-hero mb-6">
+          <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold mb-6">
             <span className="text-gradient">Practice Areas</span>
           </h2>
           
           <div className="w-32 h-1 bg-gradient-to-r from-bronze-500 to-bronze-600 rounded-full mx-auto mb-8"></div>
           
-          <p className="typography-lead max-w-4xl mx-auto leading-relaxed">
+          <p className="text-lg max-w-4xl mx-auto leading-relaxed">
             <span className="text-bronze-500 font-semibold">Distinguished legal representation</span> across multiple areas of law, 
             backed by <span className="text-charcoal-900 font-medium">25+ years of courtroom excellence</span> and an unwavering commitment to client success.
           </p>
         </div>
 
         {/* Premium Practice Area Cards */}
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-10">
+        <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
           {practiceAreas.map((area, index) => (
             <div
               key={index}
@@ -93,7 +93,7 @@ export function PracticeAreas() {
 
                 {/* Card Content */}
                 <Card className="relative h-full bg-transparent border-0 shadow-none p-0">
-                  <CardHeader className="p-8 pb-6">
+                  <CardHeader className="p-6 pb-4">
                     {/* Premium Icon Container */}
                     <div className="relative mb-6">
                       <div className={`relative w-16 h-16 bg-gradient-to-br ${area.gradientClass} rounded-2xl shadow-lg flex items-center justify-center group-hover:shadow-xl group-hover:scale-110 transition-all duration-500`}>
@@ -113,14 +113,14 @@ export function PracticeAreas() {
                     </div>
 
                     {/* Premium Typography */}
-                    <CardTitle className="typography-h3 mb-4 group-hover:text-bronze-600 transition-colors duration-300">
+                    <CardTitle className="text-xl lg:text-2xl font-semibold mb-4 group-hover:text-bronze-600 transition-colors duration-300">
                       {area.title}
                     </CardTitle>
                   </CardHeader>
 
-                  <CardContent className="px-8 pb-8">
+                  <CardContent className="px-6 pb-6">
                     {/* Enhanced Description */}
-                    <p className="typography-body text-charcoal-700 mb-6 leading-relaxed">
+                    <p className="text-base text-charcoal-700 mb-4 leading-relaxed">
                       {area.description}
                     </p>
 
@@ -162,7 +162,7 @@ export function PracticeAreas() {
         </div>
 
         {/* Premium Bottom Section */}
-        <div className="text-center mt-20 animate-fade-in">
+        <div className="text-center mt-16 animate-fade-in">
           <div className="inline-flex items-center gap-4 glass-effect rounded-2xl px-8 py-6 border border-platinum-300/40">
             <div className="flex items-center space-x-2">
               <div className="w-2 h-2 bg-bronze-500 rounded-full animate-pulse"></div>

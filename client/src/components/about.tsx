@@ -13,27 +13,27 @@ export function About() {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-br from-transparent via-platinum-100/20 to-transparent"></div>
       </div>
       
-      <div className="section-padding relative">
+      <div className="py-16 lg:py-20 relative">
         <div className="container-custom">
           {/* Section Header */}
-          <div className="text-center mb-20 animate-fade-in">
+          <div className="text-center mb-16 animate-fade-in">
             <div className="inline-flex items-center gap-3 bg-gradient-to-r from-charcoal-50 to-platinum-100 rounded-2xl px-8 py-4 mb-8 border border-platinum-300 shadow-lg">
               <div className="w-3 h-3 bg-gradient-to-r from-bronze-500 to-bronze-600 rounded-full animate-pulse"></div>
               <span className="typography-overline text-bronze-500 font-bold tracking-wider">Distinguished Legal Excellence</span>
             </div>
-            <h2 className="typography-hero-lg mb-6">
+            <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold mb-6">
               Meet <span className="text-gradient">Mason Martin</span>
             </h2>
-            <p className="typography-lead max-w-3xl mx-auto text-charcoal-700 leading-relaxed">
+            <p className="text-lg max-w-3xl mx-auto text-charcoal-700 leading-relaxed">
               Platinum-tier litigation expertise refined through 25+ years of distinguished courtroom excellence across Hawaii's most complex legal landscapes.
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-24 items-start">
+          <div className="grid lg:grid-cols-2 gap-16 items-start">
             {/* Content Section */}
-            <div className="animate-fade-in space-y-12">
+            <div className="animate-fade-in space-y-8">
               {/* Professional Summary */}
-              <div className="space-y-8">
+              <div className="space-y-6">
                 <div className="space-y-6">
                   <p className="typography-body-large text-charcoal-700 leading-relaxed">
                     With an unparalleled quarter-century of legal mastery, Mason Martin stands as Hawaii's preeminent litigation authority, delivering platinum-grade legal counsel to discerning clients across the Pacific.
@@ -76,7 +76,7 @@ export function About() {
 
               {/* Professional Pillars */}
               <div className="space-y-6">
-                <h3 className="typography-h3 text-charcoal-900 mb-8">Excellence Pillars</h3>
+                <h3 className="text-xl lg:text-2xl font-semibold text-charcoal-900 mb-6">Excellence Pillars</h3>
                 <div className="space-y-4">
                   {[
                     "Uncompromising dedication to client advocacy and case excellence",
@@ -169,8 +169,8 @@ export function About() {
           </div>
 
           {/* Premium Trust Indicators */}
-          <div className="mt-24 animate-fade-in">
-            <div className="bg-gradient-to-r from-charcoal-900 to-charcoal-700 rounded-3xl p-12 relative overflow-hidden">
+          <div className="mt-16 animate-fade-in">
+            <div className="bg-gradient-to-r from-charcoal-900 to-charcoal-700 rounded-3xl p-8 lg:p-10 relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-r from-bronze-500/5 via-transparent to-bronze-500/5"></div>
               <div className="relative grid md:grid-cols-4 gap-8 text-center">
                 {[
