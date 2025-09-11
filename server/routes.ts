@@ -1,12 +1,15 @@
 import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertClientSchema, insertConsultationSchema, insertCaseSchema, insertInvoiceSchema } from "@shared/schema";
+import { insertClientSchema, insertConsultationSchema, insertCaseSchema, insertInvoiceSchema, insertDocumentSchema } from "@shared/schema";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { grokLegalAssistant } from "./grok";
 import { randomBytes } from "crypto";
 import { sendConsultationConfirmation, sendClientPortalAccess } from "./email";
+import { uploadSingle, handleMulterError } from "./multer-config";
+import { join } from "path";
+import { existsSync, unlinkSync } from "fs";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
@@ -451,11 +454,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Document management routes - TODO: Implement when document storage is ready
-  /*
-  app.get("/api/documents", authenticateToken, async (req, res) => {
+  // Document management routes
+  app.get("/api/documents", authenticateToken, requireAdminRole, async (req, res) => {
     try {
-      const documents = await storage.getAllDocuments();
+      const { clientId, caseId, category, q } = req.query;
+      
+      const filter: { clientId?: string; caseId?: string; category?: string; q?: string } = {};
+      if (clientId && typeof clientId === 'string') filter.clientId = clientId;
+      if (caseId && typeof caseId === 'string') filter.caseId = caseId;
+      if (category && typeof category === 'string') filter.category = category;
+      if (q && typeof q === 'string') filter.q = q;
+      
+      const documents = await storage.listDocuments(filter);
+      
+      await storage.logAction(req.user!.userId, "list", "documents", null, { filter, resultCount: documents.length }, {
+        ip: req.ip,
+        userAgent: req.get('User-Agent')
+      });
+      
       res.json(documents);
     } catch (error) {
       console.error("Get documents error:", error);
@@ -463,43 +479,178 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.post("/api/documents/upload", authenticateToken, async (req, res) => {
+  app.get("/api/documents/:id", authenticateToken, requireAdminRole, async (req, res) => {
     try {
-      // This would typically use multer middleware for file uploads
-      // For now, we'll return a placeholder response
-      res.status(501).json({ message: "File upload not yet implemented" });
-    } catch (error) {
-      console.error("Upload document error:", error);
-      res.status(500).json({ message: "Failed to upload document" });
-    }
-  });
-
-  app.get("/api/documents/:id/download", authenticateToken, async (req, res) => {
-    try {
-      const document = await storage.getDocument(req.params.id);
+      const document = await storage.getDocumentById(req.params.id);
       if (!document) {
         return res.status(404).json({ message: "Document not found" });
       }
       
-      // This would typically serve the file from storage
-      res.status(501).json({ message: "File download not yet implemented" });
+      await storage.logAction(req.user!.userId, "view", "document", req.params.id, {}, {
+        ip: req.ip,
+        userAgent: req.get('User-Agent')
+      });
+      
+      res.json(document);
+    } catch (error) {
+      console.error("Get document error:", error);
+      res.status(500).json({ message: "Failed to fetch document" });
+    }
+  });
+
+  app.post("/api/documents/upload", authenticateToken, requireAdminRole, (req, res) => {
+    uploadSingle(req, res, async (uploadErr) => {
+      try {
+        if (uploadErr) {
+          const errorInfo = handleMulterError(uploadErr);
+          return res.status(errorInfo.status).json({ message: errorInfo.message });
+        }
+
+        if (!req.file) {
+          return res.status(400).json({ message: "No file uploaded" });
+        }
+
+        // Validate required fields
+        const { clientId, caseId, category, description } = req.body;
+        if (!category) {
+          // Clean up uploaded file
+          if (existsSync(req.file.path)) {
+            unlinkSync(req.file.path);
+          }
+          return res.status(400).json({ message: "Category is required" });
+        }
+
+        // Create document metadata
+        const documentData = {
+          id: req.body.documentId, // Set by multer config
+          filename: req.file.filename,
+          originalName: req.file.originalname,
+          size: req.file.size,
+          mimeType: req.file.mimetype,
+          clientId: clientId || null,
+          caseId: caseId || null,
+          category,
+          description: description || null,
+          uploadedBy: req.user!.userId
+        };
+
+        // Validate with Zod schema
+        const validatedData = insertDocumentSchema.parse(documentData);
+        
+        // Save document metadata to database
+        const document = await storage.createDocument(validatedData);
+        
+        // Log successful upload
+        await storage.logAction(req.user!.userId, "upload", "document", document.id, {
+          filename: document.filename,
+          originalName: document.originalName,
+          size: document.size,
+          mimeType: document.mimeType,
+          category: document.category
+        }, {
+          ip: req.ip,
+          userAgent: req.get('User-Agent')
+        });
+        
+        res.status(201).json(document);
+      } catch (error) {
+        console.error("Upload document error:", error);
+        
+        // Clean up uploaded file on error
+        if (req.file && existsSync(req.file.path)) {
+          try {
+            unlinkSync(req.file.path);
+          } catch (cleanupError) {
+            console.error("Failed to clean up uploaded file:", cleanupError);
+          }
+        }
+        
+        res.status(500).json({ message: "Failed to upload document" });
+      }
+    });
+  });
+
+  app.get("/api/documents/:id/download", authenticateToken, requireAdminRole, async (req, res) => {
+    try {
+      const document = await storage.getDocumentById(req.params.id);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+      
+      // Construct file path
+      const clientId = document.clientId || '_uncategorized';
+      const caseId = document.caseId || '_general';
+      const filePath = join('uploads', clientId, caseId, document.filename);
+      
+      // Check if file exists
+      if (!existsSync(filePath)) {
+        console.error(`File not found: ${filePath}`);
+        return res.status(404).json({ message: "File not found on disk" });
+      }
+      
+      // Set security headers for download
+      res.setHeader('Content-Type', document.mimeType);
+      res.setHeader('Content-Disposition', `attachment; filename="${document.originalName}"`);
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      
+      // Log download
+      await storage.logAction(req.user!.userId, "download", "document", req.params.id, {
+        filename: document.filename,
+        originalName: document.originalName
+      }, {
+        ip: req.ip,
+        userAgent: req.get('User-Agent')
+      });
+      
+      // Send file
+      res.sendFile(join(process.cwd(), filePath));
     } catch (error) {
       console.error("Download document error:", error);
       res.status(500).json({ message: "Failed to download document" });
     }
   });
 
-  app.delete("/api/documents/:id", authenticateToken, async (req, res) => {
+  app.delete("/api/documents/:id", authenticateToken, requireAdminRole, async (req, res) => {
     try {
+      const document = await storage.getDocumentById(req.params.id);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+      
+      // Construct file path
+      const clientId = document.clientId || '_uncategorized';
+      const caseId = document.caseId || '_general';
+      const filePath = join('uploads', clientId, caseId, document.filename);
+      
+      // Delete from database first
       await storage.deleteDocument(req.params.id);
-      await storage.logAction(req.user!.userId, "delete", "document", req.params.id, {});
+      
+      // Clean up file from disk
+      if (existsSync(filePath)) {
+        try {
+          unlinkSync(filePath);
+        } catch (fileError) {
+          console.error("Failed to delete file from disk:", fileError);
+          // Log but don't fail the request since database deletion succeeded
+        }
+      }
+      
+      // Log deletion
+      await storage.logAction(req.user!.userId, "delete", "document", req.params.id, {
+        filename: document.filename,
+        originalName: document.originalName
+      }, {
+        ip: req.ip,
+        userAgent: req.get('User-Agent')
+      });
+      
       res.json({ message: "Document deleted successfully" });
     } catch (error) {
       console.error("Delete document error:", error);
       res.status(500).json({ message: "Failed to delete document" });
     }
   });
-  */
 
   // Profile routes
   app.get("/api/auth/user", authenticateToken, async (req, res) => {

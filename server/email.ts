@@ -1,5 +1,6 @@
 
 import { db } from './db';
+import { sql } from "drizzle-orm";
 
 interface EmailParams {
   to: string;
@@ -37,9 +38,9 @@ export async function sendEmail(params: EmailParams): Promise<boolean> {
     }
 
     // Use Neon's email service through database connection
-    await db.execute(`
-      SELECT pg_notify('email_queue', $1)
-    `, [JSON.stringify(emailData)]);
+    await db.execute(sql`
+      SELECT pg_notify('email_queue', ${JSON.stringify(emailData)})
+    `);
     
     console.log(`Email queued successfully to ${params.to}`);
     return true;

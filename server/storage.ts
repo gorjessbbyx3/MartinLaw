@@ -8,6 +8,7 @@ import {
   aiChats,
   clientTokens,
   auditLogs,
+  documents,
   type User,
   type InsertUser,
   type Client,
@@ -26,6 +27,8 @@ import {
   type InsertClientToken,
   type AuditLog,
   type InsertAuditLog,
+  type Document,
+  type InsertDocument,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, ilike, lt } from "drizzle-orm";
@@ -84,6 +87,13 @@ export interface IStorage {
   searchClients(query: string): Promise<Client[]>;
   searchCases(query: string): Promise<Case[]>;
   searchConsultations(query: string): Promise<Consultation[]>;
+
+  // Document operations
+  createDocument(meta: InsertDocument): Promise<Document>;
+  getDocumentById(id: string): Promise<Document | undefined>;
+  listDocuments(filter?: { clientId?: string; caseId?: string; category?: string; q?: string }): Promise<Document[]>;
+  updateDocument(id: string, data: Partial<InsertDocument>): Promise<Document>;
+  deleteDocument(id: string): Promise<void>;
 
   // Audit logging
   logAction(userId: string | null, action: string, resourceType: string, resourceId: string | null, details?: any, meta?: { ip?: string; userAgent?: string }): Promise<AuditLog>;
@@ -428,6 +438,64 @@ export class DatabaseStorage implements IStorage {
       ))
       .orderBy(desc(auditLogs.createdAt))
       .limit(limit);
+  }
+
+  // Document operations
+  async createDocument(meta: InsertDocument): Promise<Document> {
+    const [document] = await db.insert(documents).values(meta).returning();
+    return document;
+  }
+
+  async getDocumentById(id: string): Promise<Document | undefined> {
+    const [document] = await db.select().from(documents).where(eq(documents.id, id));
+    return document;
+  }
+
+  async listDocuments(filter?: { clientId?: string; caseId?: string; category?: string; q?: string }): Promise<Document[]> {
+    let query = db.select().from(documents);
+    
+    if (filter) {
+      const conditions = [];
+      
+      if (filter.clientId) {
+        conditions.push(eq(documents.clientId, filter.clientId));
+      }
+      
+      if (filter.caseId) {
+        conditions.push(eq(documents.caseId, filter.caseId));
+      }
+      
+      if (filter.category) {
+        conditions.push(eq(documents.category, filter.category));
+      }
+      
+      if (filter.q) {
+        conditions.push(or(
+          ilike(documents.originalName, `%${filter.q}%`),
+          ilike(documents.description, `%${filter.q}%`),
+          ilike(documents.category, `%${filter.q}%`)
+        ));
+      }
+      
+      if (conditions.length > 0) {
+        query = query.where(and(...conditions)) as any;
+      }
+    }
+    
+    return await query.orderBy(desc(documents.createdAt));
+  }
+
+  async updateDocument(id: string, data: Partial<InsertDocument>): Promise<Document> {
+    const [document] = await db
+      .update(documents)
+      .set({ ...data, updatedAt: new Date() })
+      .where(eq(documents.id, id))
+      .returning();
+    return document;
+  }
+
+  async deleteDocument(id: string): Promise<void> {
+    await db.delete(documents).where(eq(documents.id, id));
   }
 }
 
