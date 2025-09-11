@@ -70,7 +70,8 @@ export default function Home() {
           <div className="border-t border-navy-700 mt-12 pt-8 text-center text-navy-200">
             <p>&copy; 2024 Mason Martin Law. All rights reserved. | 
                <a href="#" className="hover:text-gold-400 transition-colors" data-testid="link-privacy">Privacy Policy</a> | 
-               <a href="#" className="hover:text-gold-400 transition-colors" data-testid="link-terms">Terms of Service</a>
+               <a href="#" className="hover:text-gold-400 transition-colors" data-testid="link-terms">Terms of Service</a> | 
+               <a href="/admin-login" className="opacity-30 hover:opacity-100 hover:text-gold-400 transition-all duration-300" data-testid="link-admin-portal">Portal</a>
             </p>
             <p className="mt-2 text-sm">Attorney Advertising. Prior results do not guarantee a similar outcome.</p>
           </div>
