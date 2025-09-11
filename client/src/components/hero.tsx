@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Award, Shield, Gavel } from "lucide-react";
+import attorneyPhoto from "@assets/image_1757573946693.jpeg";
 
 export function Hero() {
   const scrollToSection = (sectionId: string) => {
@@ -63,7 +64,7 @@ export function Hero() {
           </div>
           <div className="lg:text-center animate-fade-in">
             <img 
-              src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=800" 
+              src={attorneyPhoto} 
               alt="Mason Martin - Professional Attorney Headshot" 
               className="rounded-2xl shadow-2xl mx-auto max-w-lg w-full"
               data-testid="img-attorney-headshot"
