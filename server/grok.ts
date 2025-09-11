@@ -1,8 +1,15 @@
 import OpenAI from "openai";
 
+// XAI integration - following the javascript_xai blueprint pattern
+const apiKey = process.env.XAI_API_KEY || process.env.GROK_API_KEY;
+
+if (!apiKey) {
+  throw new Error("XAI_API_KEY environment variable is required. Please set your xAI API key in the environment variables.");
+}
+
 const openai = new OpenAI({ 
   baseURL: "https://api.x.ai/v1", 
-  apiKey: process.env.XAI_API_KEY || process.env.GROK_API_KEY || "default_key"
+  apiKey: apiKey
 });
 
 export async function grokChatCompletion(messages: any[]): Promise<string> {
