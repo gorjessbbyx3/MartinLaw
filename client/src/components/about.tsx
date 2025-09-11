@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { GraduationCap, Award, Scale, Heart } from "lucide-react";
 import { Button } from '@/components/ui/button';
+import aboutPhoto from "@assets/IMG_4754_1757576560414.jpeg";
 
 export function About() {
   return (
@@ -32,7 +33,10 @@ export function About() {
             </div>
             <div className="mt-12 flex flex-col sm:flex-row gap-4">
               <Button
-                onClick={() => scrollToSection('consultation')}
+                onClick={() => {
+                  const element = document.getElementById('consultation');
+                  element?.scrollIntoView({ behavior: 'smooth' });
+                }}
                 className="btn-navy px-8 py-4 text-lg"
               >
                 Schedule Consultation
@@ -51,8 +55,8 @@ export function About() {
             <div className="relative">
               <div className="absolute -inset-4 bg-gradient-to-r from-navy-500 to-gold-400 rounded-3xl blur opacity-20"></div>
               <img
-                src="https://images.unsplash.com/photo-1556157382-97eda2d62296?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
-                alt="Professional lawyer in office setting with law books and gavel"
+                src={aboutPhoto}
+                alt="Mason Martin - Professional Attorney"
                 className="relative rounded-3xl shadow-2xl w-full animate-float"
                 data-testid="img-about-lawyer"
               />
