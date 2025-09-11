@@ -392,7 +392,7 @@ export function Cases() {
                   <TableCell data-testid={`text-created-date-${caseItem.id}`}>
                     <div className="flex items-center">
                       <Calendar className="h-4 w-4 mr-2 text-gray-400" />
-                      {new Date(caseItem.createdAt).toLocaleDateString()}
+                      {caseItem.createdAt ? new Date(caseItem.createdAt).toLocaleDateString() : "N/A"}
                     </div>
                   </TableCell>
                   <TableCell>

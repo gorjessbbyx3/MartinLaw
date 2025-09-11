@@ -291,7 +291,7 @@ export function Clients() {
                     )}
                   </TableCell>
                   <TableCell data-testid={`text-created-date-${client.id}`}>
-                    {formatDate(client.createdAt)}
+                    {client.createdAt ? formatDate(client.createdAt.toString()) : "N/A"}
                   </TableCell>
                   <TableCell>
                     <Button
