@@ -105,11 +105,12 @@
 
   /* Tesla-inspired button styles */
   .btn-primary {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-4 rounded-full font-semibold tracking-wide transition-all duration-300;
+    @apply bg-primary text-primary-foreground px-8 py-4 rounded-full font-semibold tracking-wide transition-all duration-300;
     box-shadow: 0 4px 14px 0 rgb(0 0 0 / 0.1);
   }
-
+  
   .btn-primary:hover {
+    background-color: hsl(var(--primary) / 0.9);
     transform: translateY(-1px);
     box-shadow: 0 6px 20px 0 rgb(0 0 0 / 0.15);
   }
@@ -123,29 +124,42 @@
   }
 
   .btn-accent {
-    @apply bg-accent text-accent-foreground hover:bg-accent/90 px-8 py-4 rounded-full font-semibold tracking-wide transition-all duration-300;
+    @apply bg-accent text-accent-foreground px-8 py-4 rounded-full font-semibold tracking-wide transition-all duration-300;
     box-shadow: 0 4px 14px 0 rgb(59 130 246 / 0.2);
   }
-
+  
   .btn-accent:hover {
+    background-color: hsl(var(--accent) / 0.9);
     transform: translateY(-1px);
     box-shadow: 0 6px 20px 0 rgb(59 130 246 / 0.3);
   }
 
   /* Clean navigation styles */
   .nav-link {
-    @apply px-6 py-3 text-foreground/80 hover:text-foreground transition-all duration-300 font-medium;
+    @apply px-6 py-3 hover:text-foreground transition-all duration-300 font-medium;
+    color: hsl(var(--foreground) / 0.8);
   }
 
   .mobile-menu-trigger {
-    @apply p-3 rounded-full hover:bg-muted/50 transition-all duration-300;
+    @apply p-3 rounded-full transition-all duration-300;
+  }
+  
+  .mobile-menu-trigger:hover {
+    background-color: hsl(var(--muted) / 0.5);
   }
 
   .mobile-nav-link {
-    @apply w-full text-left px-6 py-4 text-foreground/80 hover:text-foreground hover:bg-muted/30 rounded-xl transition-all duration-300 font-medium;
+    @apply w-full text-left px-6 py-4 hover:text-foreground rounded-xl transition-all duration-300 font-medium;
+    color: hsl(var(--foreground) / 0.8);
+  }
+  
+  .mobile-nav-link:hover {
+    background-color: hsl(var(--muted) / 0.3);
   }
 
   .mobile-menu-content {
-    @apply border-t border-border/50 bg-background/95 backdrop-blur-sm;
+    @apply border-t backdrop-blur-sm;
+    border-color: hsl(var(--border) / 0.5);
+    background-color: hsl(var(--background) / 0.95);
   }
 }
