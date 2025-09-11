@@ -1,0 +1,282 @@
+import {
+  users,
+  clients,
+  consultations,
+  cases,
+  invoices,
+  communications,
+  aiChats,
+  clientTokens,
+  type User,
+  type InsertUser,
+  type Client,
+  type InsertClient,
+  type Consultation,
+  type InsertConsultation,
+  type Case,
+  type InsertCase,
+  type Invoice,
+  type InsertInvoice,
+  type Communication,
+  type InsertCommunication,
+  type AiChat,
+  type InsertAiChat,
+  type ClientToken,
+} from "@shared/schema";
+import { db } from "./db";
+import { eq, desc, and } from "drizzle-orm";
+
+export interface IStorage {
+  // User operations
+  getUser(id: string): Promise<User | undefined>;
+  getUserByEmail(email: string): Promise<User | undefined>;
+  createUser(user: InsertUser): Promise<User>;
+
+  // Client operations
+  getClient(id: string): Promise<Client | undefined>;
+  getClientByEmail(email: string): Promise<Client | undefined>;
+  getAllClients(): Promise<Client[]>;
+  createClient(client: InsertClient): Promise<Client>;
+  updateClient(id: string, client: Partial<InsertClient>): Promise<Client>;
+
+  // Consultation operations
+  getConsultation(id: string): Promise<Consultation | undefined>;
+  getConsultationsByClient(clientId: string): Promise<Consultation[]>;
+  getAllConsultations(): Promise<Consultation[]>;
+  createConsultation(consultation: InsertConsultation): Promise<Consultation>;
+  updateConsultation(id: string, consultation: Partial<InsertConsultation>): Promise<Consultation>;
+
+  // Case operations
+  getCase(id: string): Promise<Case | undefined>;
+  getCasesByClient(clientId: string): Promise<Case[]>;
+  getAllCases(): Promise<Case[]>;
+  createCase(caseData: InsertCase): Promise<Case>;
+  updateCase(id: string, caseData: Partial<InsertCase>): Promise<Case>;
+
+  // Invoice operations
+  getInvoice(id: string): Promise<Invoice | undefined>;
+  getInvoicesByClient(clientId: string): Promise<Invoice[]>;
+  getAllInvoices(): Promise<Invoice[]>;
+  createInvoice(invoice: InsertInvoice): Promise<Invoice>;
+  updateInvoice(id: string, invoice: Partial<InsertInvoice>): Promise<Invoice>;
+
+  // Communication operations
+  getCommunicationsByClient(clientId: string): Promise<Communication[]>;
+  getCommunicationsByCase(caseId: string): Promise<Communication[]>;
+  createCommunication(communication: InsertCommunication): Promise<Communication>;
+
+  // AI Chat operations
+  getAiChat(sessionId: string): Promise<AiChat | undefined>;
+  createAiChat(chat: InsertAiChat): Promise<AiChat>;
+  updateAiChat(sessionId: string, chat: Partial<InsertAiChat>): Promise<AiChat>;
+
+  // Client token operations
+  getClientToken(token: string): Promise<ClientToken | undefined>;
+  createClientToken(clientId: string, token: string, expiresAt: Date): Promise<ClientToken>;
+  deleteExpiredTokens(): Promise<void>;
+}
+
+export class DatabaseStorage implements IStorage {
+  // User operations
+  async getUser(id: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
+  }
+
+  async getUserByEmail(email: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.email, email));
+    return user;
+  }
+
+  async createUser(userData: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(userData).returning();
+    return user;
+  }
+
+  // Client operations
+  async getClient(id: string): Promise<Client | undefined> {
+    const [client] = await db.select().from(clients).where(eq(clients.id, id));
+    return client;
+  }
+
+  async getClientByEmail(email: string): Promise<Client | undefined> {
+    const [client] = await db.select().from(clients).where(eq(clients.email, email));
+    return client;
+  }
+
+  async getAllClients(): Promise<Client[]> {
+    return await db.select().from(clients).orderBy(desc(clients.createdAt));
+  }
+
+  async createClient(clientData: InsertClient): Promise<Client> {
+    const [client] = await db.insert(clients).values(clientData).returning();
+    return client;
+  }
+
+  async updateClient(id: string, clientData: Partial<InsertClient>): Promise<Client> {
+    const [client] = await db
+      .update(clients)
+      .set({ ...clientData, updatedAt: new Date() })
+      .where(eq(clients.id, id))
+      .returning();
+    return client;
+  }
+
+  // Consultation operations
+  async getConsultation(id: string): Promise<Consultation | undefined> {
+    const [consultation] = await db.select().from(consultations).where(eq(consultations.id, id));
+    return consultation;
+  }
+
+  async getConsultationsByClient(clientId: string): Promise<Consultation[]> {
+    return await db
+      .select()
+      .from(consultations)
+      .where(eq(consultations.clientId, clientId))
+      .orderBy(desc(consultations.scheduledAt));
+  }
+
+  async getAllConsultations(): Promise<Consultation[]> {
+    return await db.select().from(consultations).orderBy(desc(consultations.scheduledAt));
+  }
+
+  async createConsultation(consultationData: InsertConsultation): Promise<Consultation> {
+    const [consultation] = await db.insert(consultations).values(consultationData).returning();
+    return consultation;
+  }
+
+  async updateConsultation(id: string, consultationData: Partial<InsertConsultation>): Promise<Consultation> {
+    const [consultation] = await db
+      .update(consultations)
+      .set({ ...consultationData, updatedAt: new Date() })
+      .where(eq(consultations.id, id))
+      .returning();
+    return consultation;
+  }
+
+  // Case operations
+  async getCase(id: string): Promise<Case | undefined> {
+    const [caseData] = await db.select().from(cases).where(eq(cases.id, id));
+    return caseData;
+  }
+
+  async getCasesByClient(clientId: string): Promise<Case[]> {
+    return await db
+      .select()
+      .from(cases)
+      .where(eq(cases.clientId, clientId))
+      .orderBy(desc(cases.createdAt));
+  }
+
+  async getAllCases(): Promise<Case[]> {
+    return await db.select().from(cases).orderBy(desc(cases.createdAt));
+  }
+
+  async createCase(caseData: InsertCase): Promise<Case> {
+    const [newCase] = await db.insert(cases).values(caseData).returning();
+    return newCase;
+  }
+
+  async updateCase(id: string, caseData: Partial<InsertCase>): Promise<Case> {
+    const [updatedCase] = await db
+      .update(cases)
+      .set({ ...caseData, updatedAt: new Date() })
+      .where(eq(cases.id, id))
+      .returning();
+    return updatedCase;
+  }
+
+  // Invoice operations
+  async getInvoice(id: string): Promise<Invoice | undefined> {
+    const [invoice] = await db.select().from(invoices).where(eq(invoices.id, id));
+    return invoice;
+  }
+
+  async getInvoicesByClient(clientId: string): Promise<Invoice[]> {
+    return await db
+      .select()
+      .from(invoices)
+      .where(eq(invoices.clientId, clientId))
+      .orderBy(desc(invoices.createdAt));
+  }
+
+  async getAllInvoices(): Promise<Invoice[]> {
+    return await db.select().from(invoices).orderBy(desc(invoices.createdAt));
+  }
+
+  async createInvoice(invoiceData: InsertInvoice): Promise<Invoice> {
+    const [invoice] = await db.insert(invoices).values(invoiceData).returning();
+    return invoice;
+  }
+
+  async updateInvoice(id: string, invoiceData: Partial<InsertInvoice>): Promise<Invoice> {
+    const [invoice] = await db
+      .update(invoices)
+      .set({ ...invoiceData, updatedAt: new Date() })
+      .where(eq(invoices.id, id))
+      .returning();
+    return invoice;
+  }
+
+  // Communication operations
+  async getCommunicationsByClient(clientId: string): Promise<Communication[]> {
+    return await db
+      .select()
+      .from(communications)
+      .where(eq(communications.clientId, clientId))
+      .orderBy(desc(communications.createdAt));
+  }
+
+  async getCommunicationsByCase(caseId: string): Promise<Communication[]> {
+    return await db
+      .select()
+      .from(communications)
+      .where(eq(communications.caseId, caseId))
+      .orderBy(desc(communications.createdAt));
+  }
+
+  async createCommunication(communicationData: InsertCommunication): Promise<Communication> {
+    const [communication] = await db.insert(communications).values(communicationData).returning();
+    return communication;
+  }
+
+  // AI Chat operations
+  async getAiChat(sessionId: string): Promise<AiChat | undefined> {
+    const [chat] = await db.select().from(aiChats).where(eq(aiChats.sessionId, sessionId));
+    return chat;
+  }
+
+  async createAiChat(chatData: InsertAiChat): Promise<AiChat> {
+    const [chat] = await db.insert(aiChats).values(chatData).returning();
+    return chat;
+  }
+
+  async updateAiChat(sessionId: string, chatData: Partial<InsertAiChat>): Promise<AiChat> {
+    const [chat] = await db
+      .update(aiChats)
+      .set({ ...chatData, updatedAt: new Date() })
+      .where(eq(aiChats.sessionId, sessionId))
+      .returning();
+    return chat;
+  }
+
+  // Client token operations
+  async getClientToken(token: string): Promise<ClientToken | undefined> {
+    const [clientToken] = await db.select().from(clientTokens).where(eq(clientTokens.token, token));
+    return clientToken;
+  }
+
+  async createClientToken(clientId: string, token: string, expiresAt: Date): Promise<ClientToken> {
+    const [clientToken] = await db
+      .insert(clientTokens)
+      .values({ clientId, token, expiresAt })
+      .returning();
+    return clientToken;
+  }
+
+  async deleteExpiredTokens(): Promise<void> {
+    await db.delete(clientTokens).where(eq(clientTokens.expiresAt, new Date()));
+  }
+}
+
+export const storage = new DatabaseStorage();
