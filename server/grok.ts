@@ -1,21 +1,21 @@
 import OpenAI from "openai";
 
-// XAI integration - following the javascript_xai blueprint pattern
-const apiKey = process.env.XAI_API_KEY || process.env.GROK_API_KEY;
+// Groq integration - using Groq's API for fast inference
+const apiKey = process.env.GROQ_API_KEY;
 
 if (!apiKey) {
-  throw new Error("XAI_API_KEY environment variable is required. Please set your xAI API key in the environment variables.");
+  throw new Error("GROQ_API_KEY environment variable is required. Please set your Groq API key in the environment variables.");
 }
 
 const openai = new OpenAI({ 
-  baseURL: "https://api.x.ai/v1", 
+  baseURL: "https://api.groq.com/openai/v1", 
   apiKey: apiKey
 });
 
 export async function grokChatCompletion(messages: any[]): Promise<string> {
   try {
     const response = await openai.chat.completions.create({
-      model: "grok-2-1212",
+      model: "llama-3.1-70b-versatile",
       messages: messages,
       max_tokens: 500,
       temperature: 0.7,
@@ -23,7 +23,7 @@ export async function grokChatCompletion(messages: any[]): Promise<string> {
 
     return response.choices[0].message.content || "I apologize, but I couldn't generate a response. Please try again.";
   } catch (error) {
-    console.error("Grok API error:", error);
+    console.error("Groq API error:", error);
     throw new Error("Failed to get AI response");
   }
 }
@@ -66,7 +66,7 @@ IMPORTANT: You cannot provide specific legal advice. Always recommend scheduling
     ];
 
     const response = await openai.chat.completions.create({
-      model: "grok-2-1212",
+      model: "llama-3.1-70b-versatile",
       messages: messages,
       max_tokens: 400,
       temperature: 0.7,
@@ -74,7 +74,7 @@ IMPORTANT: You cannot provide specific legal advice. Always recommend scheduling
 
     return response.choices[0].message.content || "I apologize, but I couldn't generate a response. Please contact our office directly at (808) 555-1234 for assistance.";
   } catch (error) {
-    console.error("Grok legal assistant error:", error);
+    console.error("Groq legal assistant error:", error);
     return "I'm experiencing technical difficulties. Please contact Mason Martin Law directly at (808) 555-1234 or mason@masonmartinlaw.com for assistance.";
   }
 }
@@ -82,7 +82,7 @@ IMPORTANT: You cannot provide specific legal advice. Always recommend scheduling
 export async function grokDocumentAnalysis(documentText: string): Promise<string> {
   try {
     const response = await openai.chat.completions.create({
-      model: "grok-2-1212",
+      model: "llama-3.1-70b-versatile",
       messages: [
         {
           role: "system",
@@ -99,7 +99,7 @@ export async function grokDocumentAnalysis(documentText: string): Promise<string
 
     return response.choices[0].message.content || "Unable to analyze document at this time.";
   } catch (error) {
-    console.error("Grok document analysis error:", error);
+    console.error("Groq document analysis error:", error);
     throw new Error("Failed to analyze document");
   }
 }
