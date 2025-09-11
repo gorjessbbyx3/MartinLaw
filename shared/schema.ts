@@ -128,6 +128,17 @@ export const insertConsultationSchema = createInsertSchema(consultations).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+}).extend({
+  // Accept ISO date strings from frontend and convert to Date objects
+  scheduledAt: z.preprocess(
+    (arg) => {
+      if (typeof arg === 'string') {
+        return new Date(arg);
+      }
+      return arg;
+    },
+    z.date()
+  ),
 });
 
 export const insertCaseSchema = createInsertSchema(cases).omit({

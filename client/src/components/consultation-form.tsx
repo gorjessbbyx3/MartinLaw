@@ -41,6 +41,18 @@ export function ConsultationForm() {
 
   const mutation = useMutation({
     mutationFn: async (data: ConsultationFormData) => {
+      // Create proper date/time or use a default future date
+      let scheduledAt;
+      if (data.preferredDate && data.preferredTime) {
+        scheduledAt = new Date(`${data.preferredDate}T${data.preferredTime}`).toISOString();
+      } else {
+        // Default to tomorrow at 10 AM if no date/time specified
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(10, 0, 0, 0);
+        scheduledAt = tomorrow.toISOString();
+      }
+
       const consultationData = {
         clientEmail: data.email,
         firstName: data.firstName,
@@ -48,12 +60,17 @@ export function ConsultationForm() {
         phone: data.phone,
         type: data.consultationType,
         caseType: data.caseType,
-        scheduledAt: new Date(`${data.preferredDate}T${data.preferredTime}`).toISOString(),
+        scheduledAt,
         description: data.description,
         rate: data.consultationType === "phone" ? "0" : data.consultationType === "virtual" ? "200" : "250",
       };
 
-      await apiRequest("POST", "/api/consultations", consultationData);
+      console.log('Form data before processing:', JSON.stringify(data, null, 2));
+      console.log('Computed scheduledAt:', scheduledAt);
+      console.log('Full consultation data being sent:', JSON.stringify(consultationData, null, 2));
+      const result = await apiRequest("POST", "/api/consultations", consultationData);
+      console.log('Consultation created:', result);
+      return result;
     },
     onSuccess: () => {
       toast({
@@ -85,6 +102,8 @@ export function ConsultationForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Form data:', formData);
+    
     if (!formData.firstName || !formData.lastName || !formData.email || !formData.consultationType) {
       toast({
         title: "Missing Information",
@@ -93,6 +112,8 @@ export function ConsultationForm() {
       });
       return;
     }
+    
+    console.log('Submitting consultation form');
     mutation.mutate(formData);
   };
 
@@ -203,7 +224,7 @@ export function ConsultationForm() {
             
             <div>
               <Label className="block text-sm font-semibold text-navy-900 mb-2">Case Type</Label>
-              <Select onValueChange={(value) => handleInputChange("caseType", value)} data-testid="select-case-type">
+              <Select value={formData.caseType} onValueChange={(value) => handleInputChange("caseType", value)} data-testid="select-case-type">
                 <SelectTrigger className="focus:ring-navy-500 focus:border-transparent">
                   <SelectValue placeholder="Select case type..." />
                 </SelectTrigger>
