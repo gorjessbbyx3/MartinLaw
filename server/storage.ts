@@ -25,7 +25,7 @@ import {
   type InsertClientToken,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, desc, and } from "drizzle-orm";
+import { eq, desc, and, or, ilike, lt } from "drizzle-orm";
 
 export interface IStorage {
   // User operations
@@ -66,10 +66,23 @@ export interface IStorage {
   getCommunicationsByCase(caseId: string): Promise<Communication[]>;
   createCommunication(communication: InsertCommunication): Promise<Communication>;
 
+  // AI Chat operations
+  getAiChat(sessionId: string): Promise<AiChat | undefined>;
+  createAiChat(chatData: InsertAiChat): Promise<AiChat>;
+  updateAiChat(sessionId: string, chatData: Partial<InsertAiChat>): Promise<AiChat>;
+
   // Client token operations
   getClientToken(token: string): Promise<ClientToken | undefined>;
   createClientToken(clientId: string, token: string, expiresAt: Date): Promise<ClientToken>;
   deleteExpiredTokens(): Promise<void>;
+
+  // Search operations
+  searchClients(query: string): Promise<Client[]>;
+  searchCases(query: string): Promise<Case[]>;
+  searchConsultations(query: string): Promise<Consultation[]>;
+
+  // Audit logging
+  logAction(userId: string, action: string, resourceType: string, resourceId: string, details?: any): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -251,7 +264,70 @@ export class DatabaseStorage implements IStorage {
   }
 
   async deleteExpiredTokens(): Promise<void> {
-    await db.delete(clientTokens).where(eq(clientTokens.expiresAt, new Date()));
+    await db.delete(clientTokens).where(lt(clientTokens.expiresAt, new Date()));
+  }
+
+  // AI Chat operations
+  async getAiChat(sessionId: string): Promise<AiChat | undefined> {
+    const [chat] = await db.select().from(aiChats).where(eq(aiChats.sessionId, sessionId));
+    return chat;
+  }
+
+  async createAiChat(chatData: InsertAiChat): Promise<AiChat> {
+    const [chat] = await db.insert(aiChats).values(chatData).returning();
+    return chat;
+  }
+
+  async updateAiChat(sessionId: string, chatData: Partial<InsertAiChat>): Promise<AiChat> {
+    const [chat] = await db
+      .update(aiChats)
+      .set({ ...chatData, updatedAt: new Date() })
+      .where(eq(aiChats.sessionId, sessionId))
+      .returning();
+    return chat;
+  }
+
+  // Search operations
+  async searchClients(query: string): Promise<Client[]> {
+    return await db
+      .select()
+      .from(clients)
+      .where(or(
+        ilike(clients.firstName, `%${query}%`),
+        ilike(clients.lastName, `%${query}%`),
+        ilike(clients.email, `%${query}%`)
+      ))
+      .orderBy(desc(clients.updatedAt));
+  }
+
+  async searchCases(query: string): Promise<Case[]> {
+    return await db
+      .select()
+      .from(cases)
+      .where(or(
+        ilike(cases.title, `%${query}%`),
+        ilike(cases.caseType, `%${query}%`),
+        ilike(cases.description, `%${query}%`)
+      ))
+      .orderBy(desc(cases.updatedAt));
+  }
+
+  async searchConsultations(query: string): Promise<Consultation[]> {
+    return await db
+      .select()
+      .from(consultations)
+      .where(or(
+        ilike(consultations.type, `%${query}%`),
+        ilike(consultations.caseType, `%${query}%`),
+        ilike(consultations.description, `%${query}%`)
+      ))
+      .orderBy(desc(consultations.updatedAt));
+  }
+
+  // Audit logging
+  async logAction(userId: string, action: string, resourceType: string, resourceId: string, details?: any): Promise<void> {
+    // Log to console for now - in production, this would go to a proper audit table
+    console.log(`AUDIT: User ${userId} performed ${action} on ${resourceType} ${resourceId}`, details ? JSON.stringify(details) : '');
   }
 }
 

@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertClientSchema, insertConsultationSchema, insertCaseSchema, insertInvoiceSchema } from "@shared/schema";
@@ -10,8 +10,34 @@ import { sendConsultationConfirmation, sendClientPortalAccess } from "./email";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
+// Setup automatic token cleanup (every hour) - runs once when module loads
+setInterval(async () => {
+  try {
+    await storage.deleteExpiredTokens();
+    console.log("Automatic token cleanup completed");
+  } catch (error) {
+    console.error("Automatic token cleanup failed:", error);
+  }
+}, 60 * 60 * 1000); // 1 hour
+
+// JWT User Payload Interface
+interface JWTUser {
+  userId: string;
+  email: string;
+  role: string;
+}
+
+// Express Request type augmentation
+declare global {
+  namespace Express {
+    interface Request {
+      user?: JWTUser;
+    }
+  }
+}
+
 // Middleware for authentication
-const authenticateToken = (req: any, res: any, next: any) => {
+const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
 
@@ -19,13 +45,26 @@ const authenticateToken = (req: any, res: any, next: any) => {
     return res.status(401).json({ message: 'Access token required' });
   }
 
-  jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
+  jwt.verify(token, JWT_SECRET, (err: jwt.VerifyErrors | null, decoded: any) => {
     if (err) {
       return res.status(403).json({ message: 'Invalid token' });
     }
-    req.user = user;
+    req.user = decoded as JWTUser;
     next();
   });
+};
+
+// Middleware for admin role authorization
+const requireAdminRole = (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    return res.status(401).json({ message: 'Authentication required' });
+  }
+  
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ message: 'Admin access required' });
+  }
+  
+  next();
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -181,7 +220,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           clientName,
           consultationData.type,
           scheduledDate,
-          consultationData.caseType
+          consultationData.caseType || undefined
         );
       } catch (emailError) {
         console.error("Failed to send consultation confirmation email:", emailError);
@@ -360,6 +399,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Client portal data error:", error);
       res.status(500).json({ message: "Failed to fetch client data" });
+    }
+  });
+
+  // Search endpoints
+  app.get("/api/search/clients", authenticateToken, async (req, res) => {
+    try {
+      const { q } = req.query;
+      if (!q || typeof q !== 'string') {
+        return res.status(400).json({ message: "Search query is required" });
+      }
+      
+      const results = await storage.searchClients(q);
+      await storage.logAction(req.user!.userId, "search", "clients", "", { query: q, resultCount: results.length });
+      res.json(results);
+    } catch (error) {
+      console.error("Search clients error:", error);
+      res.status(500).json({ message: "Failed to search clients" });
+    }
+  });
+
+  app.get("/api/search/cases", authenticateToken, async (req, res) => {
+    try {
+      const { q } = req.query;
+      if (!q || typeof q !== 'string') {
+        return res.status(400).json({ message: "Search query is required" });
+      }
+      
+      const results = await storage.searchCases(q);
+      await storage.logAction(req.user!.userId, "search", "cases", "", { query: q, resultCount: results.length });
+      res.json(results);
+    } catch (error) {
+      console.error("Search cases error:", error);
+      res.status(500).json({ message: "Failed to search cases" });
+    }
+  });
+
+  app.get("/api/search/consultations", authenticateToken, async (req, res) => {
+    try {
+      const { q } = req.query;
+      if (!q || typeof q !== 'string') {
+        return res.status(400).json({ message: "Search query is required" });
+      }
+      
+      const results = await storage.searchConsultations(q);
+      await storage.logAction(req.user!.userId, "search", "consultations", "", { query: q, resultCount: results.length });
+      res.json(results);
+    } catch (error) {
+      console.error("Search consultations error:", error);
+      res.status(500).json({ message: "Failed to search consultations" });
+    }
+  });
+
+  // Token cleanup endpoint (for admin use)
+  app.post("/api/admin/cleanup-tokens", authenticateToken, requireAdminRole, async (req, res) => {
+    try {
+      await storage.deleteExpiredTokens();
+      await storage.logAction(req.user!.userId, "cleanup", "tokens", "", {});
+      res.json({ message: "Expired tokens cleaned up successfully" });
+    } catch (error) {
+      console.error("Token cleanup error:", error);
+      res.status(500).json({ message: "Failed to cleanup expired tokens" });
     }
   });
 
