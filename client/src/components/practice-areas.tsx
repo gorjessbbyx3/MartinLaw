@@ -59,105 +59,100 @@ export function PracticeAreas() {
             <Scale className="w-5 h-5 text-bronze-500" />
             <span className="typography-overline text-bronze-500 tracking-wider">Legal Expertise</span>
           </div>
-          
+
           <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold mb-6">
             <span className="text-gradient">Practice Areas</span>
           </h2>
-          
+
           <div className="w-32 h-1 bg-gradient-to-r from-bronze-500 to-bronze-600 rounded-full mx-auto mb-8"></div>
-          
+
           <p className="text-lg max-w-4xl mx-auto leading-relaxed">
             <span className="text-bronze-500 font-semibold">Distinguished legal representation</span> across multiple areas of law, 
             backed by <span className="text-charcoal-900 font-medium">25+ years of courtroom excellence</span> and an unwavering commitment to client success.
           </p>
         </div>
 
-        {/* Premium Practice Area Cards */}
-        <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
+        {/* Practice Areas Grid */}
+        <div className="grid lg:grid-cols-3 gap-10 mb-20">
           {practiceAreas.map((area, index) => (
-            <div
-              key={index}
-              className="card-hover group cursor-pointer relative"
-              data-testid={`card-practice-area-${area.title.toLowerCase().replace(/\s+/g, '-')}`}
+            <Card 
+              key={area.title} 
+              className="group relative p-10 border-0 bg-gradient-to-br from-white via-charcoal-50/60 to-platinum-100/40 hover:from-charcoal-50 hover:via-platinum-100/80 hover:to-bronze-50/40 backdrop-blur-md card-hover shimmer-effect rounded-3xl"
+              style={{ animationDelay: `${index * 0.15}s` }}
             >
-              {/* Premium Card Container */}
-              <div className="relative h-full">
-                {/* Card Background with Premium Styling */}
-                <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-platinum-50 rounded-3xl border border-platinum-300/40 shadow-xl group-hover:shadow-2xl transition-all duration-500">
-                  {/* Inner Premium Border */}
-                  <div className="absolute inset-0 rounded-3xl border border-bronze-500/10 group-hover:border-bronze-500/20 transition-all duration-500"></div>
-                </div>
-                
-                {/* Elegant Glow Effect */}
-                <div className="absolute -inset-2 bg-gradient-to-br from-bronze-500/5 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-500 blur-xl"></div>
-
-                {/* Card Content */}
-                <Card className="relative h-full bg-transparent border-0 shadow-none p-0">
-                  <CardHeader className="p-6 pb-4">
-                    {/* Premium Icon Container */}
-                    <div className="relative mb-6">
-                      <div className={`relative w-16 h-16 bg-gradient-to-br ${area.gradientClass} rounded-2xl shadow-lg flex items-center justify-center group-hover:shadow-xl group-hover:scale-110 transition-all duration-500`}>
-                        <area.icon className="w-8 h-8 text-bronze-500" />
-                        
-                        {/* Icon Glow Effect */}
-                        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-bronze-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
-                        
-                        {/* Premium Badge Indicator */}
-                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-bronze-500 rounded-full flex items-center justify-center shadow-lg">
-                          <div className="w-2 h-2 bg-white rounded-full"></div>
-                        </div>
-                      </div>
-                      
-                      {/* Floating Background Element */}
-                      <div className="absolute top-4 left-4 w-12 h-12 bg-bronze-500/5 rounded-xl blur-sm group-hover:bg-bronze-500/10 transition-all duration-500"></div>
-                    </div>
-
-                    {/* Premium Typography */}
-                    <CardTitle className="text-xl lg:text-2xl font-semibold mb-4 group-hover:text-bronze-600 transition-colors duration-300">
-                      {area.title}
-                    </CardTitle>
-                  </CardHeader>
-
-                  <CardContent className="px-6 pb-6">
-                    {/* Enhanced Description */}
-                    <p className="text-base text-charcoal-700 mb-4 leading-relaxed">
-                      {area.description}
-                    </p>
-
-                    {/* Premium Specialty Badges */}
-                    <div className="space-y-4 mb-6">
-                      <div className="typography-caption text-charcoal-500 font-medium">SPECIALIZATIONS</div>
-                      <div className="flex flex-wrap gap-2">
-                        {area.specialties.map((specialty, idx) => (
-                          <Badge 
-                            key={idx} 
-                            variant="secondary" 
-                            className={`typography-body-small px-3 py-1.5 rounded-full border transition-all duration-300 ${
-                              area.accentColor === 'bronze' 
-                                ? 'bg-bronze-50 text-bronze-700 border-bronze-200/50 hover:bg-bronze-100 hover:border-bronze-300' 
-                                : 'bg-platinum-100 text-charcoal-700 border-platinum-300/50 hover:bg-platinum-200 hover:border-charcoal-300'
-                            }`}
-                            data-testid={`badge-specialty-${specialty.toLowerCase().replace(/\s+/g, '-')}`}
-                          >
-                            {specialty}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Premium Call-to-Action */}
-                    <div className="flex items-center justify-between pt-4 border-t border-platinum-300/30">
-                      <div className="typography-body-small text-charcoal-500 font-medium">
-                        Learn More
-                      </div>
-                      <div className="flex items-center space-x-2 text-bronze-600 group-hover:text-bronze-500 transition-colors duration-300">
-                        <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+              {/* Card Background with Premium Styling */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white via-white to-platinum-50 rounded-3xl border border-platinum-300/40 shadow-xl group-hover:shadow-2xl transition-all duration-500">
+                {/* Inner Premium Border */}
+                <div className="absolute inset-0 rounded-3xl border border-bronze-500/10 group-hover:border-bronze-500/20 transition-all duration-500"></div>
               </div>
-            </div>
+
+              {/* Elegant Glow Effect */}
+              <div className="absolute -inset-2 bg-gradient-to-br from-bronze-500/5 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-500 blur-xl"></div>
+
+              {/* Card Content */}
+              <CardContent className="relative z-10 bg-transparent p-0 m-0">
+                {/* Premium Icon Container */}
+                <div className="relative mb-6">
+                  <div className={`relative w-16 h-16 bg-gradient-to-br ${area.gradientClass} rounded-2xl shadow-lg flex items-center justify-center group-hover:shadow-xl group-hover:scale-110 transition-all duration-500`}>
+                    <area.icon className="w-8 h-8 text-bronze-500" />
+
+                    {/* Icon Glow Effect */}
+                    <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-bronze-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+
+                    {/* Premium Badge Indicator */}
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-bronze-500 rounded-full flex items-center justify-center shadow-lg">
+                      <div className="w-2 h-2 bg-white rounded-full"></div>
+                    </div>
+                  </div>
+
+                  {/* Floating Background Element */}
+                  <div className="absolute top-4 left-4 w-12 h-12 bg-bronze-500/5 rounded-xl blur-sm group-hover:bg-bronze-500/10 transition-all duration-500"></div>
+                </div>
+
+                {/* Premium Typography */}
+                <CardTitle className="text-xl lg:text-2xl font-semibold mb-4 group-hover:text-bronze-600 transition-colors duration-300">
+                  {area.title}
+                </CardTitle>
+              </CardContent>
+
+              <CardContent className="px-0 pb-0 pt-4">
+                {/* Enhanced Description */}
+                <p className="text-base text-charcoal-700 mb-4 leading-relaxed">
+                  {area.description}
+                </p>
+
+                {/* Premium Specialty Badges */}
+                <div className="space-y-4 mb-6">
+                  <div className="typography-caption text-charcoal-500 font-medium">SPECIALIZATIONS</div>
+                  <div className="flex flex-wrap gap-2">
+                    {area.specialties.map((specialty, idx) => (
+                      <Badge 
+                        key={idx} 
+                        variant="secondary" 
+                        className={`typography-body-small px-3 py-1.5 rounded-full border transition-all duration-300 ${
+                          area.accentColor === 'bronze' 
+                            ? 'bg-bronze-50 text-bronze-700 border-bronze-200/50 hover:bg-bronze-100 hover:border-bronze-300' 
+                            : 'bg-platinum-100 text-charcoal-700 border-platinum-300/50 hover:bg-platinum-200 hover:border-charcoal-300'
+                        }`}
+                        data-testid={`badge-specialty-${specialty.toLowerCase().replace(/\s+/g, '-')}`}
+                      >
+                        {specialty}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Premium Call-to-Action */}
+                <div className="flex items-center justify-between pt-4 border-t border-platinum-300/30">
+                  <div className="typography-body-small text-charcoal-500 font-medium">
+                    Learn More
+                  </div>
+                  <div className="flex items-center space-x-2 text-bronze-600 group-hover:text-bronze-500 transition-colors duration-300">
+                    <ArrowRight className="w-5 h-5 transform group-hover:translate-x-1 transition-transform duration-300" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
 

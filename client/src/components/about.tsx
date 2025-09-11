@@ -13,12 +13,12 @@ export function About() {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-br from-transparent via-platinum-100/20 to-transparent"></div>
       </div>
       
-      <div className="py-16 lg:py-20 relative">
+      <div className="py-20 lg:py-28 relative">
         <div className="container-custom">
           {/* Section Header */}
-          <div className="text-center mb-16 animate-fade-in">
-            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-charcoal-50 to-platinum-100 rounded-2xl px-8 py-4 mb-8 border border-platinum-300 shadow-lg">
-              <div className="w-3 h-3 bg-gradient-to-r from-bronze-500 to-bronze-600 rounded-full animate-pulse"></div>
+          <div className="text-center mb-20 animate-fade-in">
+            <div className="inline-flex items-center gap-4 bg-gradient-to-r from-charcoal-50 to-platinum-100 rounded-3xl px-10 py-5 mb-10 border border-platinum-300 shadow-xl glow-effect shimmer-effect">
+              <div className="w-4 h-4 bg-gradient-to-r from-bronze-500 to-bronze-600 rounded-full animate-pulse"></div>
               <span className="typography-overline text-bronze-500 font-bold tracking-wider">Distinguished Legal Excellence</span>
             </div>
             <h2 className="text-3xl lg:text-4xl xl:text-5xl font-bold mb-6">

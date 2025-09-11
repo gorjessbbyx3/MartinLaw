@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Award, Shield, Gavel, Star, Phone, Calendar } from "lucide-react";
+import { Award, Shield, Gavel, Star, Phone, Calendar, Scale, FileText } from "lucide-react";
 import attorneyPhoto from "@assets/IMG_4760_1757575612514.jpeg";
 
 export function Hero() {
@@ -16,11 +16,11 @@ export function Hero() {
       <div className="absolute inset-0">
         {/* Primary Pattern */}
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2280%22%20height%3D%2280%22%20viewBox%3D%220%200%2080%2080%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.015%22%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%2240%22%20r%3D%221.5%22/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-40"></div>
-        
+
         {/* Elegant Geometric Overlays */}
         <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-bronze-500/5 to-transparent"></div>
         <div className="absolute bottom-0 left-0 w-1/2 h-1/2 bg-gradient-to-tr from-charcoal-900/20 to-transparent"></div>
-        
+
         {/* Premium Radial Gradient */}
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(212,175,55,0.08)_0%,transparent_50%)] opacity-60"></div>
       </div>
@@ -45,7 +45,7 @@ export function Hero() {
                 <span className="block text-bronze-500 font-black">Attorney</span>
                 <span className="block text-platinum-300 font-light text-3xl lg:text-4xl">Honolulu, Hawaii</span>
               </h1>
-              
+
               {/* Elegant Subheadline */}
               <div className="w-24 h-1 bg-gradient-to-r from-bronze-500 to-bronze-600 rounded-full mb-6"></div>
               <p className="text-lg leading-relaxed max-w-2xl text-white">
@@ -56,7 +56,7 @@ export function Hero() {
 
             {/* Premium Call-to-Action Section */}
             <div className="space-y-6 pt-4">
-              <div className="flex flex-col sm:flex-row gap-6">
+              <div className="flex flex-col sm:flex-flex-col sm:flex-row gap-6">
                 <Button 
                   onClick={() => scrollToSection('consultation')} 
                   className="btn-bronze text-lg px-10 py-6 rounded-2xl shadow-2xl hover:shadow-bronze-500/25 transition-all duration-500 group"
@@ -68,7 +68,7 @@ export function Hero() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                   </svg>
                 </Button>
-                
+
                 <Button 
                   onClick={() => scrollToSection('practice-areas')} 
                   variant="outline"
@@ -105,7 +105,7 @@ export function Hero() {
                   <div className="typography-caption text-platinum-300">Retired</div>
                 </div>
               </div>
-              
+
               <div className="flex items-center space-x-3 group">
                 <div className="p-3 rounded-xl bg-bronze-500/10 border border-bronze-500/20 group-hover:bg-bronze-500/20 transition-colors duration-300">
                   <Shield className="h-6 w-6 text-bronze-500" />
@@ -115,7 +115,7 @@ export function Hero() {
                   <div className="typography-caption text-platinum-300">Medal Recipient</div>
                 </div>
               </div>
-              
+
               <div className="flex items-center space-x-3 group">
                 <div className="p-3 rounded-xl bg-bronze-500/10 border border-bronze-500/20 group-hover:bg-bronze-500/20 transition-colors duration-300">
                   <Star className="h-6 w-6 text-bronze-500" />
@@ -141,7 +141,7 @@ export function Hero() {
                     className="rounded-3xl shadow-2xl w-full max-w-lg mx-auto lg:max-w-none border-2 border-bronze-500/20 group-hover:border-bronze-500/30 transition-all duration-500"
                     data-testid="img-attorney-headshot"
                   />
-                  
+
                   {/* Premium Overlay Elements */}
                   <div className="absolute top-8 right-8 glass-effect rounded-2xl p-4 border border-bronze-500/20 backdrop-blur-lg">
                     <div className="flex items-center space-x-2">
