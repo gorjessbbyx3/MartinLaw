@@ -451,7 +451,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Document management routes
+  // Document management routes - TODO: Implement when document storage is ready
+  /*
   app.get("/api/documents", authenticateToken, async (req, res) => {
     try {
       const documents = await storage.getAllDocuments();
@@ -498,6 +499,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: "Failed to delete document" });
     }
   });
+  */
 
   // Profile routes
   app.get("/api/auth/user", authenticateToken, async (req, res) => {
