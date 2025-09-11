@@ -7,6 +7,7 @@ import {
   communications,
   aiChats,
   clientTokens,
+  auditLogs,
   type User,
   type InsertUser,
   type Client,
@@ -23,6 +24,8 @@ import {
   type InsertAiChat,
   type ClientToken,
   type InsertClientToken,
+  type AuditLog,
+  type InsertAuditLog,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, desc, and, or, ilike, lt } from "drizzle-orm";
@@ -83,7 +86,10 @@ export interface IStorage {
   searchConsultations(query: string): Promise<Consultation[]>;
 
   // Audit logging
-  logAction(userId: string, action: string, resourceType: string, resourceId: string, details?: any): Promise<void>;
+  logAction(userId: string | null, action: string, resourceType: string, resourceId: string | null, details?: any, meta?: { ip?: string; userAgent?: string }): Promise<AuditLog>;
+  getRecentAuditLogs(limit?: number): Promise<AuditLog[]>;
+  getAuditLogsByUser(userId: string, limit?: number): Promise<AuditLog[]>;
+  getAuditLogsByResource(resourceType: string, resourceId: string, limit?: number): Promise<AuditLog[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -335,9 +341,93 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Audit logging
-  async logAction(userId: string, action: string, resourceType: string, resourceId: string, details?: any): Promise<void> {
-    // Log to console for now - in production, this would go to a proper audit table
-    console.log(`AUDIT: User ${userId} performed ${action} on ${resourceType} ${resourceId}`, details ? JSON.stringify(details) : '');
+  private sanitizeAuditDetails(details: any): any {
+    if (!details || typeof details !== 'object') {
+      return details;
+    }
+
+    const sensitiveFields = [
+      'password', 'token', 'authorization', 'cookie', 'ssn', 'creditCard', 
+      'cvv', 'secret', 'apiKey', 'authToken', 'accessToken', 'refreshToken'
+    ];
+
+    const sanitized = { ...details };
+
+    const redactSensitive = (obj: any, path = ''): any => {
+      if (!obj || typeof obj !== 'object') {
+        return obj;
+      }
+
+      if (Array.isArray(obj)) {
+        return obj.map((item, index) => redactSensitive(item, `${path}[${index}]`));
+      }
+
+      const result = { ...obj };
+      for (const [key, value] of Object.entries(result)) {
+        const lowercaseKey = key.toLowerCase();
+        const shouldRedact = sensitiveFields.some(field => lowercaseKey.includes(field));
+        
+        if (shouldRedact) {
+          result[key] = '[REDACTED]';
+        } else if (typeof value === 'object' && value !== null) {
+          result[key] = redactSensitive(value, `${path}.${key}`);
+        }
+      }
+      
+      return result;
+    };
+
+    return redactSensitive(sanitized);
+  }
+
+  async logAction(
+    userId: string | null, 
+    action: string, 
+    resourceType: string, 
+    resourceId: string | null, 
+    details?: any,
+    meta?: { ip?: string; userAgent?: string }
+  ): Promise<AuditLog> {
+    const sanitizedDetails = this.sanitizeAuditDetails(details);
+    
+    const auditData: InsertAuditLog = {
+      userId,
+      action,
+      resourceType,
+      resourceId,
+      status: 'success',
+      ip: meta?.ip || null,
+      userAgent: meta?.userAgent || null,
+      details: sanitizedDetails || {}
+    };
+
+    const [auditLog] = await db.insert(auditLogs).values(auditData).returning();
+    return auditLog;
+  }
+
+  async getRecentAuditLogs(limit = 50): Promise<AuditLog[]> {
+    return await db.select().from(auditLogs).orderBy(desc(auditLogs.createdAt)).limit(limit);
+  }
+
+  async getAuditLogsByUser(userId: string, limit = 50): Promise<AuditLog[]> {
+    return await db
+      .select()
+      .from(auditLogs)
+      .where(eq(auditLogs.userId, userId))
+      .orderBy(desc(auditLogs.createdAt))
+      .limit(limit);
+  }
+
+  async getAuditLogsByResource(resourceType: string, resourceId: string, limit = 50): Promise<AuditLog[]> {
+    return await db
+      .select()
+      .from(auditLogs)
+      .where(and(
+        eq(auditLogs.resourceType, resourceType),
+        eq(auditLogs.resourceId, resourceId)
+      ))
+      .orderBy(desc(auditLogs.createdAt))
+      .limit(limit);
   }
 }
 

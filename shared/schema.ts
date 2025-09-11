@@ -128,6 +128,20 @@ export const documents = pgTable("documents", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Audit Logs table
+export const auditLogs = pgTable("audit_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id),
+  action: varchar("action").notNull(),
+  resourceType: varchar("resource_type").notNull(),
+  resourceId: varchar("resource_id"),
+  status: varchar("status").notNull().default("success"),
+  ip: varchar("ip"),
+  userAgent: text("user_agent"),
+  details: jsonb("details").notNull().default({}),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Type exports
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
@@ -156,6 +170,9 @@ export type InsertClientToken = typeof clientTokens.$inferInsert;
 export type Document = typeof documents.$inferSelect;
 export type InsertDocument = typeof documents.$inferInsert;
 
+export type AuditLog = typeof auditLogs.$inferSelect;
+export type InsertAuditLog = typeof auditLogs.$inferInsert;
+
 // Zod schemas for validation
 export const insertUserSchema = createInsertSchema(users);
 export const insertClientSchema = createInsertSchema(clients);
@@ -166,3 +183,4 @@ export const insertCommunicationSchema = createInsertSchema(communications);
 export const insertAiChatSchema = createInsertSchema(aiChats);
 export const insertClientTokenSchema = createInsertSchema(clientTokens);
 export const insertDocumentSchema = createInsertSchema(documents);
+export const insertAuditLogSchema = createInsertSchema(auditLogs);
