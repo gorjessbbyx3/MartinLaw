@@ -186,7 +186,7 @@ export function Cases() {
 
   const caseStatuses = [
     "open",
-    "in-progress", 
+    "in-progress",
     "closed",
     "settled",
     "dismissed"
