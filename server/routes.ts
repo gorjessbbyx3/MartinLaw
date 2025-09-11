@@ -4,8 +4,9 @@ import { storage } from "./storage";
 import { insertClientSchema, insertConsultationSchema, insertCaseSchema, insertInvoiceSchema } from "@shared/schema";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { grokChatCompletion, grokLegalAssistant } from "./grok";
+import { grokLegalAssistant } from "./grok";
 import { randomBytes } from "crypto";
+import { sendConsultationConfirmation, sendClientPortalAccess } from "./email";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
@@ -162,6 +163,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const consultation = await storage.createConsultation(consultationData);
+      
+      // Send email confirmation
+      try {
+        const clientName = `${req.body.firstName} ${req.body.lastName}`;
+        const scheduledDate = new Date(consultationData.scheduledAt).toLocaleDateString('en-US', {
+          weekday: 'long',
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit'
+        });
+        
+        await sendConsultationConfirmation(
+          req.body.clientEmail,
+          clientName,
+          consultationData.type,
+          scheduledDate,
+          consultationData.caseType
+        );
+      } catch (emailError) {
+        console.error("Failed to send consultation confirmation email:", emailError);
+        // Don't fail the consultation creation if email fails
+      }
+      
       res.status(201).json(consultation);
     } catch (error) {
       console.error("Create consultation error:", error);
@@ -285,8 +311,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       await storage.createClientToken(client.id, token, expiresAt);
 
-      // In a real implementation, send this token via email
-      res.json({ token, message: "Access token generated" });
+      // Send access token via email
+      try {
+        const clientName = `${client.firstName} ${client.lastName}`;
+        await sendClientPortalAccess(client.email, clientName, token, expiresAt);
+        res.json({ message: "Access token sent to your email address" });
+      } catch (emailError) {
+        console.error("Failed to send client portal access email:", emailError);
+        // SECURITY: Never return tokens in API responses, even if email fails
+        // This prevents unauthorized access without email verification
+        return res.status(500).json({ 
+          message: "Unable to deliver access token. Please try again later or contact our office." 
+        });
+      }
     } catch (error) {
       console.error("Client portal access error:", error);
       res.status(500).json({ message: "Failed to generate access token" });
