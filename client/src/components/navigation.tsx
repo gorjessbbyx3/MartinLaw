@@ -1,10 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Scale } from "lucide-react";
 
 export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      setIsScrolled(scrollPosition > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
@@ -15,65 +26,69 @@ export function Navigation() {
   };
 
   return (
-    <nav className="bg-white shadow-sm border-b border-border sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <h1 className="text-xl font-serif font-bold text-navy-900" data-testid="text-law-firm-name">Mason Martin Law</h1>
+    <nav 
+      className={`sticky top-0 z-50 transition-all duration-500 ease-out ${
+        isScrolled 
+          ? 'bg-white/95 backdrop-blur-xl border-b border-platinum-300/30 shadow-lg shadow-charcoal-900/5' 
+          : 'bg-white border-b border-platinum-100'
+      }`}
+    >
+      <div className="container-custom">
+        <div className="flex justify-between items-center h-20 lg:h-24">
+          {/* Premium Brand Identity */}
+          <div className="flex items-center group">
+            <div className="flex items-center space-x-3">
+              <div className="relative p-2.5 rounded-xl bg-gradient-to-br from-charcoal-900 to-charcoal-700 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
+                <Scale className="h-6 w-6 lg:h-7 lg:w-7 text-bronze-500" />
+                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-bronze-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+              <div className="flex flex-col">
+                <h1 className="typography-h4 lg:typography-h3 text-gradient font-display tracking-tight" data-testid="text-law-firm-name">
+                  Mason Martin Law
+                </h1>
+                <div className="typography-overline text-platinum-500 -mt-1 hidden lg:block">
+                  Premium Legal Services
+                </div>
+              </div>
             </div>
           </div>
           
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
-              <button 
-                onClick={() => scrollToSection('home')} 
-                className="text-muted-foreground hover:text-navy-700 px-3 py-2 text-sm font-medium transition-colors"
-                data-testid="button-nav-home"
-              >
-                Home
-              </button>
-              <button 
-                onClick={() => scrollToSection('about')} 
-                className="text-muted-foreground hover:text-navy-700 px-3 py-2 text-sm font-medium transition-colors"
-                data-testid="button-nav-about"
-              >
-                About
-              </button>
-              <button 
-                onClick={() => scrollToSection('practice-areas')} 
-                className="text-muted-foreground hover:text-navy-700 px-3 py-2 text-sm font-medium transition-colors"
-                data-testid="button-nav-practice-areas"
-              >
-                Practice Areas
-              </button>
-              <button 
-                onClick={() => scrollToSection('radio-show')} 
-                className="text-muted-foreground hover:text-navy-700 px-3 py-2 text-sm font-medium transition-colors"
-                data-testid="button-nav-radio-show"
-              >
-                Radio Show
-              </button>
-              <button 
-                onClick={() => scrollToSection('contact')} 
-                className="text-muted-foreground hover:text-navy-700 px-3 py-2 text-sm font-medium transition-colors"
-                data-testid="button-nav-contact"
-              >
-                Contact
-              </button>
+          {/* Desktop Navigation */}
+          <div className="hidden lg:block">
+            <div className="flex items-center space-x-1">
+              {[
+                { id: 'home', label: 'Home' },
+                { id: 'about', label: 'About' },
+                { id: 'practice-areas', label: 'Practice Areas' },
+                { id: 'radio-show', label: 'Radio Show' },
+                { id: 'contact', label: 'Contact' }
+              ].map((item) => (
+                <button 
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)} 
+                  className="nav-link-premium"
+                  data-testid={`button-nav-${item.id}`}
+                >
+                  {item.label}
+                </button>
+              ))}
+              
+              <div className="h-6 w-px bg-platinum-300 mx-4" />
+              
               <Button 
                 variant="ghost"
                 asChild
-                className="text-muted-foreground hover:text-navy-700 px-3 py-2 text-sm font-medium transition-colors"
+                className="nav-link-premium"
                 data-testid="button-nav-client-portal"
               >
                 <Link href="/client-portal">
                   Client Portal
                 </Link>
               </Button>
+              
               <Button 
                 onClick={() => scrollToSection('consultation')} 
-                className="btn-navy"
+                className="btn-premium-primary ml-4"
                 data-testid="button-schedule-consultation"
               >
                 Schedule Consultation
@@ -81,76 +96,74 @@ export function Navigation() {
             </div>
           </div>
           
-          <div className="md:hidden">
+          {/* Mobile Menu Button */}
+          <div className="lg:hidden">
             <button 
-              className="text-muted-foreground hover:text-navy-700"
+              className="mobile-menu-trigger"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               data-testid="button-mobile-menu"
+              aria-label="Toggle mobile menu"
             >
-              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              <div className="relative">
+                {isMobileMenuOpen ? (
+                  <X className="h-6 w-6 text-charcoal-700 transition-transform duration-300 rotate-90" />
+                ) : (
+                  <Menu className="h-6 w-6 text-charcoal-700 transition-transform duration-300" />
+                )}
+              </div>
             </button>
           </div>
         </div>
         
-        {/* Mobile menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-border">
-              <button 
-                onClick={() => scrollToSection('home')} 
-                className="block px-3 py-2 text-base font-medium text-muted-foreground hover:text-navy-700 w-full text-left"
-                data-testid="button-mobile-nav-home"
-              >
-                Home
-              </button>
-              <button 
-                onClick={() => scrollToSection('about')} 
-                className="block px-3 py-2 text-base font-medium text-muted-foreground hover:text-navy-700 w-full text-left"
-                data-testid="button-mobile-nav-about"
-              >
-                About
-              </button>
-              <button 
-                onClick={() => scrollToSection('practice-areas')} 
-                className="block px-3 py-2 text-base font-medium text-muted-foreground hover:text-navy-700 w-full text-left"
-                data-testid="button-mobile-nav-practice-areas"
-              >
-                Practice Areas
-              </button>
-              <button 
-                onClick={() => scrollToSection('radio-show')} 
-                className="block px-3 py-2 text-base font-medium text-muted-foreground hover:text-navy-700 w-full text-left"
-                data-testid="button-mobile-nav-radio-show"
-              >
-                Radio Show
-              </button>
-              <button 
-                onClick={() => scrollToSection('contact')} 
-                className="block px-3 py-2 text-base font-medium text-muted-foreground hover:text-navy-700 w-full text-left"
-                data-testid="button-mobile-nav-contact"
-              >
-                Contact
-              </button>
-              <Button 
-                variant="ghost"
-                asChild
-                className="block px-3 py-2 text-base font-medium text-muted-foreground hover:text-navy-700 w-full text-left justify-start"
-                data-testid="button-mobile-nav-client-portal"
-              >
-                <Link href="/client-portal" onClick={() => setIsMobileMenuOpen(false)}>
-                  Client Portal
-                </Link>
-              </Button>
-              <Button 
-                onClick={() => scrollToSection('consultation')} 
-                className="btn-navy w-full mt-4"
-                data-testid="button-mobile-schedule-consultation"
-              >
-                Schedule Consultation
-              </Button>
+        {/* Premium Mobile Menu */}
+        <div className={`lg:hidden overflow-hidden transition-all duration-500 ease-out ${
+          isMobileMenuOpen 
+            ? 'max-h-screen opacity-100' 
+            : 'max-h-0 opacity-0'
+        }`}>
+          <div className="mobile-menu-content">
+            <div className="py-6 space-y-2">
+              {[
+                { id: 'home', label: 'Home' },
+                { id: 'about', label: 'About' },
+                { id: 'practice-areas', label: 'Practice Areas' },
+                { id: 'radio-show', label: 'Radio Show' },
+                { id: 'contact', label: 'Contact' }
+              ].map((item, index) => (
+                <button 
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)} 
+                  className="mobile-nav-link"
+                  style={{ animationDelay: `${index * 50}ms` }}
+                  data-testid={`button-mobile-nav-${item.id}`}
+                >
+                  <span className="relative z-10">{item.label}</span>
+                </button>
+              ))}
+              
+              <div className="pt-4 mt-4 border-t border-platinum-300/30">
+                <Button 
+                  variant="ghost"
+                  asChild
+                  className="mobile-nav-link justify-start"
+                  data-testid="button-mobile-nav-client-portal"
+                >
+                  <Link href="/client-portal" onClick={() => setIsMobileMenuOpen(false)}>
+                    <span className="relative z-10">Client Portal</span>
+                  </Link>
+                </Button>
+                
+                <Button 
+                  onClick={() => scrollToSection('consultation')} 
+                  className="btn-premium-primary w-full mt-4 justify-center"
+                  data-testid="button-mobile-schedule-consultation"
+                >
+                  Schedule Consultation
+                </Button>
+              </div>
             </div>
           </div>
-        )}
+        </div>
       </div>
     </nav>
   );

@@ -1,65 +1,196 @@
 import { Card } from "@/components/ui/card";
-import { GraduationCap, Award, Scale, Heart } from "lucide-react";
+import { GraduationCap, Award, Scale, Heart, Star, Shield, Users, TrendingUp, Clock, CheckCircle } from "lucide-react";
 import { Button } from '@/components/ui/button';
 import aboutPhoto from "@assets/IMG_4754_1757576560414.jpeg";
 
 export function About() {
   return (
-    <section id="about" className="section-padding bg-white relative">
-      <div className="absolute inset-0 bg-gradient-to-br from-navy-50/30 to-transparent"></div>
-      <div className="container-custom relative">
-        <div className="grid lg:grid-cols-2 gap-20 items-center">
-          <div className="animate-fade-in">
-            <div className="inline-flex items-center gap-2 bg-gold-50 rounded-full px-6 py-2 mb-8 border border-gold-200">
-              <div className="w-2 h-2 bg-gold-500 rounded-full"></div>
-              <span className="text-sm font-semibold text-gold-600 uppercase tracking-wider">25+ Years Experience</span>
+    <section id="about" className="relative bg-gradient-to-br from-charcoal-50 via-white to-platinum-100 overflow-hidden">
+      {/* Premium Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-0 left-0 w-1/3 h-1/3 bg-gradient-radial from-bronze-500/5 via-transparent to-transparent"></div>
+        <div className="absolute bottom-0 right-0 w-1/2 h-1/2 bg-gradient-radial from-charcoal-900/3 via-transparent to-transparent"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-br from-transparent via-platinum-100/20 to-transparent"></div>
+      </div>
+      
+      <div className="section-padding relative">
+        <div className="container-custom">
+          {/* Section Header */}
+          <div className="text-center mb-20 animate-fade-in">
+            <div className="inline-flex items-center gap-3 bg-gradient-to-r from-charcoal-50 to-platinum-100 rounded-2xl px-8 py-4 mb-8 border border-platinum-300 shadow-lg">
+              <div className="w-3 h-3 bg-gradient-to-r from-bronze-500 to-bronze-600 rounded-full animate-pulse"></div>
+              <span className="typography-overline text-bronze-500 font-bold tracking-wider">Distinguished Legal Excellence</span>
             </div>
-            <h2 className="text-5xl lg:text-6xl font-serif font-bold text-navy-900 mb-8 leading-tight">
-              About <span className="text-gradient">Mason Martin</span>
+            <h2 className="typography-hero-lg mb-6">
+              Meet <span className="text-gradient">Mason Martin</span>
             </h2>
-            <div className="space-y-8 text-lg text-gray-600 leading-relaxed">
-              <p className="text-xl text-gray-700 font-medium">
-                With over 25 years of legal experience, Mason Martin has established himself as one of Hawaii's premier litigation attorneys.
-              </p>
-              <p>
-                His extensive courtroom experience spans state, federal, territorial, and military courts, providing clients with unparalleled expertise across diverse legal landscapes.
-              </p>
-              <p>
-                Mason's dedication to his clients and thorough understanding of complex legal matters has resulted in successful outcomes across a wide range of practice areas, from civil litigation to military law.
-              </p>
-              <p>
-                He is committed to providing personalized legal representation and ensuring that each client receives the attention and expertise their case deserves.
-              </p>
-            </div>
-            <div className="mt-12 flex flex-col sm:flex-row gap-4">
-              <Button
-                onClick={() => {
-                  const element = document.getElementById('consultation');
-                  element?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="btn-navy px-8 py-4 text-lg"
-              >
-                Schedule Consultation
-              </Button>
-              <div className="flex items-center gap-4 text-navy-700">
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-gold-500" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  <span className="font-medium">5.0 Client Rating</span>
+            <p className="typography-lead max-w-3xl mx-auto text-charcoal-700 leading-relaxed">
+              Platinum-tier litigation expertise refined through 25+ years of distinguished courtroom excellence across Hawaii's most complex legal landscapes.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-24 items-start">
+            {/* Content Section */}
+            <div className="animate-fade-in space-y-12">
+              {/* Professional Summary */}
+              <div className="space-y-8">
+                <div className="space-y-6">
+                  <p className="typography-body-large text-charcoal-700 leading-relaxed">
+                    With an unparalleled quarter-century of legal mastery, Mason Martin stands as Hawaii's preeminent litigation authority, delivering platinum-grade legal counsel to discerning clients across the Pacific.
+                  </p>
+                  <p className="typography-body text-charcoal-500 leading-relaxed">
+                    His distinguished courtroom presence spans state, federal, territorial, and military jurisdictions, providing clients with exclusive access to multi-jurisdictional expertise that few attorneys can match. Mason's meticulous approach to complex litigation has consistently yielded exceptional outcomes for Hawaii's most sophisticated legal challenges.
+                  </p>
+                </div>
+              </div>
+
+              {/* Premium Credentials Grid */}
+              <div className="grid grid-cols-2 gap-6">
+                {[
+                  { icon: Scale, label: "Multi-Jurisdiction", value: "Expert", color: "bronze" },
+                  { icon: Users, label: "Client Success", value: "98%", color: "charcoal" },
+                  { icon: Award, label: "Court Victories", value: "500+", color: "bronze" },
+                  { icon: TrendingUp, label: "Case Value", value: "$50M+", color: "charcoal" }
+                ].map((credential, index) => (
+                  <div
+                    key={index}
+                    className="group relative p-6 bg-white rounded-2xl border border-platinum-300 shadow-lg hover:shadow-2xl transition-all duration-500 card-hover"
+                    data-testid={`credential-${credential.label.toLowerCase().replace(' ', '-')}`}
+                  >
+                    <div className="flex items-center space-x-4">
+                      <div className={`p-3 rounded-xl ${credential.color === 'bronze' ? 'bg-bronze-500/10' : 'bg-charcoal-900/10'} transition-all duration-300 group-hover:scale-110`}>
+                        <credential.icon className={`w-6 h-6 ${credential.color === 'bronze' ? 'text-bronze-500' : 'text-charcoal-900'}`} />
+                      </div>
+                      <div>
+                        <div className={`typography-h4 ${credential.color === 'bronze' ? 'text-bronze-500' : 'text-charcoal-900'} font-bold`}>
+                          {credential.value}
+                        </div>
+                        <div className="typography-body-small text-charcoal-500 font-medium">
+                          {credential.label}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Professional Pillars */}
+              <div className="space-y-6">
+                <h3 className="typography-h3 text-charcoal-900 mb-8">Excellence Pillars</h3>
+                <div className="space-y-4">
+                  {[
+                    "Uncompromising dedication to client advocacy and case excellence",
+                    "Comprehensive mastery of complex litigation across multiple court systems",
+                    "Personalized strategic counsel tailored to each client's unique circumstances",
+                    "Proven track record of securing favorable outcomes in high-stakes matters"
+                  ].map((pillar, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start gap-4 p-4 rounded-xl hover:bg-charcoal-50/50 transition-all duration-300"
+                      data-testid={`pillar-${index}`}
+                    >
+                      <div className="flex-shrink-0 w-2 h-2 bg-bronze-500 rounded-full mt-3"></div>
+                      <p className="typography-body text-charcoal-700 leading-relaxed">{pillar}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Premium CTAs */}
+              <div className="flex flex-col sm:flex-row gap-6 pt-8">
+                <Button
+                  onClick={() => {
+                    const element = document.getElementById('consultation');
+                    element?.scrollIntoView({ behavior: 'smooth' });
+                  }}
+                  className="btn-premium-primary flex-1"
+                  data-testid="button-schedule-consultation"
+                >
+                  <Clock className="w-5 h-5 mr-2" />
+                  Schedule Private Consultation
+                </Button>
+                <div className="flex items-center justify-center gap-6 px-6 py-4 bg-gradient-to-r from-charcoal-50 to-platinum-100 rounded-xl border border-platinum-300">
+                  <div className="flex items-center gap-2">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 text-bronze-500 fill-current" />
+                    ))}
+                  </div>
+                  <div className="text-center">
+                    <div className="typography-h4 text-charcoal-900">5.0</div>
+                    <div className="typography-body-small text-charcoal-500">Client Rating</div>
+                  </div>
                 </div>
               </div>
             </div>
+
+            {/* Premium Image Section */}
+            <div className="animate-slide-up">
+              <div className="relative group">
+                {/* Sophisticated Background Effects */}
+                <div className="absolute -inset-8 bg-gradient-to-br from-charcoal-900/10 via-bronze-500/5 to-charcoal-700/10 rounded-3xl blur-xl opacity-60 group-hover:opacity-80 transition-all duration-700"></div>
+                <div className="absolute -inset-4 bg-gradient-to-br from-charcoal-900 via-charcoal-700 to-bronze-500 rounded-3xl opacity-20 group-hover:opacity-30 transition-all duration-500"></div>
+                
+                {/* Main Image Container */}
+                <div className="relative bg-gradient-to-br from-white to-charcoal-50 p-3 rounded-3xl shadow-2xl group-hover:shadow-3xl transition-all duration-500">
+                  <img
+                    src={aboutPhoto}
+                    alt="Mason Martin - Distinguished Hawaii Attorney"
+                    className="relative rounded-2xl shadow-xl w-full h-auto transform group-hover:scale-[1.02] transition-transform duration-700 animate-float"
+                    data-testid="img-about-lawyer"
+                  />
+                  
+                  {/* Premium Overlay Badge */}
+                  <div className="absolute top-8 left-8 bg-gradient-to-r from-charcoal-900 to-charcoal-700 text-white px-6 py-3 rounded-xl shadow-lg backdrop-blur-sm border border-white/20">
+                    <div className="flex items-center gap-2">
+                      <Shield className="w-5 h-5 text-bronze-500" />
+                      <span className="typography-body-small font-semibold tracking-wide">Premier Counsel</span>
+                    </div>
+                  </div>
+
+                  {/* Achievement Badge */}
+                  <div className="absolute bottom-8 right-8 bg-white/95 backdrop-blur-md px-6 py-4 rounded-xl shadow-xl border border-platinum-300">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 bg-gradient-to-br from-bronze-500 to-bronze-600 rounded-xl flex items-center justify-center">
+                        <Award className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <div className="typography-h4 text-charcoal-900">25+</div>
+                        <div className="typography-body-small text-charcoal-500 font-medium">Years Excellence</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Decorative Elements */}
+                <div className="absolute -top-4 -right-4 w-24 h-24 bg-gradient-to-br from-bronze-500/20 to-bronze-600/20 rounded-full blur-2xl animate-pulse"></div>
+                <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-gradient-to-br from-charcoal-900/10 to-charcoal-700/10 rounded-full blur-3xl"></div>
+              </div>
+            </div>
           </div>
-          <div className="animate-slide-up">
-            <div className="relative">
-              <div className="absolute -inset-4 bg-gradient-to-r from-navy-500 to-gold-400 rounded-3xl blur opacity-20"></div>
-              <img
-                src={aboutPhoto}
-                alt="Mason Martin - Professional Attorney"
-                className="relative rounded-3xl shadow-2xl w-full animate-float"
-                data-testid="img-about-lawyer"
-              />
+
+          {/* Premium Trust Indicators */}
+          <div className="mt-24 animate-fade-in">
+            <div className="bg-gradient-to-r from-charcoal-900 to-charcoal-700 rounded-3xl p-12 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-bronze-500/5 via-transparent to-bronze-500/5"></div>
+              <div className="relative grid md:grid-cols-4 gap-8 text-center">
+                {[
+                  { icon: CheckCircle, value: "500+", label: "Cases Won", description: "Successful Outcomes" },
+                  { icon: Users, value: "1000+", label: "Clients Served", description: "Trusted Representation" },
+                  { icon: Scale, value: "4", label: "Court Systems", description: "Multi-Jurisdiction Expert" },
+                  { icon: Star, value: "25+", label: "Years Practice", description: "Proven Experience" }
+                ].map((stat, index) => (
+                  <div key={index} className="group" data-testid={`stat-${stat.label.toLowerCase().replace(' ', '-')}`}>
+                    <div className="mb-4 flex justify-center">
+                      <div className="p-4 bg-bronze-500/10 rounded-2xl group-hover:bg-bronze-500/20 transition-all duration-300 group-hover:scale-110">
+                        <stat.icon className="w-8 h-8 text-bronze-500" />
+                      </div>
+                    </div>
+                    <div className="typography-hero text-white mb-2">{stat.value}</div>
+                    <div className="typography-h5 text-bronze-500 mb-1">{stat.label}</div>
+                    <div className="typography-body-small text-charcoal-100">{stat.description}</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
