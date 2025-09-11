@@ -1,5 +1,6 @@
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/api";
 
 interface User {
   id: string;
@@ -22,7 +23,7 @@ export function useAuth() {
   const token = localStorage.getItem("authToken");
   
   const { data: user, isLoading, error } = useQuery<User>({
-    queryKey: ["/api/auth/user"],
+    queryKey: ["/auth/user"],
     enabled: !!token,
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -37,24 +38,7 @@ export function useAuth() {
 }
 
 export async function fetchUserProfile(): Promise<User> {
-  const token = localStorage.getItem("authToken");
-  
-  if (!token) {
-    throw new Error('No authentication token found');
-  }
-
-  const response = await fetch('/api/auth/user', {
-    method: 'GET',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('Failed to fetch user profile');
-  }
-
+  const response = await apiRequest('GET', '/auth/user');
   return response.json();
 }
 
@@ -63,23 +47,12 @@ export function useLogin() {
   
   return useMutation<LoginResponse, Error, LoginRequest>({
     mutationFn: async (credentials) => {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(credentials),
-      });
-
-      if (!response.ok) {
-        throw new Error('Login failed');
-      }
-
+      const response = await apiRequest('POST', '/auth/login', credentials);
       return response.json();
     },
     onSuccess: (data) => {
       localStorage.setItem("authToken", data.token);
-      queryClient.setQueryData(["/api/auth/user"], data.user);
+      queryClient.setQueryData(["/auth/user"], data.user);
     },
   });
 }

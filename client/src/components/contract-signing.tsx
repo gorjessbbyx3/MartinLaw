@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,11 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { 
   FileText, 
   Pen, 
   Calendar,
-  Shield
+  Shield,
+  User
 } from "lucide-react";
 
 interface Contract {
@@ -31,9 +33,21 @@ interface ContractSigningProps {
     ipAddress: string | null;
     userAgent: string;
     timestamp: string;
+    userId?: string;
+    userEmail?: string;
+    contentHash: string;
   }) => void;
   onCancel: () => void;
 }
+
+// Helper function to generate content hash
+const generateContentHash = async (content: string): Promise<string> => {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(content);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+};
 
 export default function ContractSigning({ contract, onSign, onCancel }: ContractSigningProps) {
   const [isDrawing, setIsDrawing] = useState(false);
@@ -41,9 +55,30 @@ export default function ContractSigning({ contract, onSign, onCancel }: Contract
   const [fullName, setFullName] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [esignConsent, setEsignConsent] = useState(false);
   const [signatureMethod, setSignatureMethod] = useState<'type' | 'draw'>('type');
+  const [contentHash, setContentHash] = useState<string>("");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { toast } = useToast();
+  const { user, isAuthenticated } = useAuth();
+
+  // Generate content hash on component mount
+  useEffect(() => {
+    const generateHash = async () => {
+      const hash = await generateContentHash(contract.templateContent);
+      setContentHash(hash);
+    };
+    generateHash();
+  }, [contract.templateContent]);
+
+  // Set fullName from authenticated user if available
+  useEffect(() => {
+    if (user && user.email && !fullName) {
+      // Extract name from email or use email as fallback
+      const nameFromEmail = user.email.split('@')[0].replace(/[._]/g, ' ');
+      setFullName(nameFromEmail);
+    }
+  }, [user, fullName]);
 
   const startDrawing = (e: React.MouseEvent<HTMLCanvasElement>) => {
     setIsDrawing(true);
@@ -82,6 +117,49 @@ export default function ContractSigning({ contract, onSign, onCancel }: Contract
     }
   };
 
+  // Touch event handlers for mobile support
+  const startTouchDrawing = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    setIsDrawing(true);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    const touch = e.touches[0];
+    ctx.beginPath();
+    ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+  };
+
+  const touchDraw = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    if (!isDrawing) return;
+    
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const rect = canvas.getBoundingClientRect();
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    const touch = e.touches[0];
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#000';
+    ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+    ctx.stroke();
+  };
+
+  const stopTouchDrawing = (e: React.TouchEvent<HTMLCanvasElement>) => {
+    e.preventDefault();
+    setIsDrawing(false);
+    if (canvasRef.current) {
+      setSignature(canvasRef.current.toDataURL());
+    }
+  };
+
   const clearSignature = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -94,10 +172,10 @@ export default function ContractSigning({ contract, onSign, onCancel }: Contract
   };
 
   const handleSign = async () => {
-    if (!fullName || !agreedToTerms) {
+    if (!fullName || !agreedToTerms || !esignConsent) {
       toast({
         title: "Please complete all required fields",
-        description: "Name and agreement to terms are required.",
+        description: "Name, agreement to terms, and ESIGN consent are required.",
         variant: "destructive"
       });
       return;
@@ -107,6 +185,15 @@ export default function ContractSigning({ contract, onSign, onCancel }: Contract
       toast({
         title: "Signature required",
         description: "Please draw your signature in the box above.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!contentHash) {
+      toast({
+        title: "Processing document",
+        description: "Please wait while we process the document hash.",
         variant: "destructive"
       });
       return;
@@ -129,7 +216,10 @@ export default function ContractSigning({ contract, onSign, onCancel }: Contract
       signatureMethod,
       ipAddress: clientIP,
       userAgent: navigator.userAgent,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      userId: user?.id,
+      userEmail: user?.email,
+      contentHash
     };
 
     onSign(signatureData);
@@ -159,11 +249,21 @@ export default function ContractSigning({ contract, onSign, onCancel }: Contract
         <CardContent>
           <div className="prose max-w-none">
             <div 
-              className="whitespace-pre-wrap border rounded-lg p-4 bg-gray-50 max-h-96 overflow-y-auto"
-              dangerouslySetInnerHTML={{ __html: contract.templateContent.replace(/\n/g, '<br />') }}
+              className="whitespace-pre-wrap border rounded-lg p-4 bg-gray-50 max-h-96 overflow-y-auto leading-relaxed"
               data-testid="div-contract-content"
-            />
+            >
+              {contract.templateContent}
+            </div>
           </div>
+          {/* Document integrity info */}
+          {contentHash && (
+            <div className="mt-4 text-xs text-muted-foreground border-t pt-2">
+              <div className="flex items-center space-x-2">
+                <Shield className="h-3 w-3" />
+                <span>Document Hash: {contentHash.substring(0, 16)}...</span>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
 
@@ -223,11 +323,14 @@ export default function ContractSigning({ contract, onSign, onCancel }: Contract
                   ref={canvasRef}
                   width={600}
                   height={150}
-                  className="border border-gray-200 rounded cursor-crosshair bg-white w-full"
+                  className="border border-gray-200 rounded cursor-crosshair bg-white w-full touch-none"
                   onMouseDown={startDrawing}
                   onMouseMove={draw}
                   onMouseUp={stopDrawing}
                   onMouseLeave={stopDrawing}
+                  onTouchStart={startTouchDrawing}
+                  onTouchMove={touchDraw}
+                  onTouchEnd={stopTouchDrawing}
                   data-testid="canvas-drawn-signature"
                 />
                 <div className="flex justify-between items-center mt-2">
@@ -274,6 +377,47 @@ export default function ContractSigning({ contract, onSign, onCancel }: Contract
 
           {/* Legal Agreements */}
           <div className="space-y-4">
+            {/* User Authentication Info */}
+            {isAuthenticated && user && (
+              <div className="bg-green-50 border border-green-200 rounded-lg p-3" data-testid="div-auth-info">
+                <div className="flex items-center space-x-2">
+                  <User className="h-4 w-4 text-green-600" />
+                  <div className="text-sm">
+                    <p className="font-medium text-green-900">Authenticated User</p>
+                    <p className="text-green-700">{user.email}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* ESIGN Consent - Must come first */}
+            <div className="flex items-start space-x-2">
+              <Checkbox
+                id="esign-consent"
+                checked={esignConsent}
+                onCheckedChange={(checked) => setEsignConsent(checked as boolean)}
+                data-testid="checkbox-esign-consent"
+              />
+              <div className="grid gap-1.5 leading-none">
+                <label
+                  htmlFor="esign-consent"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  ESIGN Act Consent - Electronic Signature Agreement
+                </label>
+                <div className="text-xs text-muted-foreground space-y-1">
+                  <p>By checking this box, I consent to use electronic signatures and agree that:</p>
+                  <ul className="list-disc list-inside space-y-0.5 ml-2">
+                    <li>Electronic signatures are valid and legally binding</li>
+                    <li>I can access and retain electronic documents</li>
+                    <li>I have the necessary hardware and software to access documents</li>
+                    <li>I can request paper copies if needed</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            {/* Terms Agreement */}
             <div className="flex items-start space-x-2">
               <Checkbox
                 id="terms-agreement"
@@ -319,7 +463,7 @@ export default function ContractSigning({ contract, onSign, onCancel }: Contract
             </Button>
             <Button 
               onClick={handleSign}
-              disabled={!fullName || !agreedToTerms}
+              disabled={!fullName || !agreedToTerms || !esignConsent || !contentHash}
               className="bg-green-600 hover:bg-green-700"
               data-testid="button-sign-contract"
             >

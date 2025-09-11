@@ -52,7 +52,7 @@ export async function apiRequest(
     throw new AppError('Too many requests. Please try again later.', 429);
   }
 
-  const token = localStorage.getItem("auth_token");
+  const token = localStorage.getItem("authToken");
 
   const config: RequestInit = {
     method,
@@ -147,7 +147,7 @@ export async function secureApiRequest(
   data?: any,
   options?: Parameters<typeof apiRequest>[3]
 ): Promise<any> {
-  const token = localStorage.getItem("auth_token");
+  const token = localStorage.getItem("authToken");
 
   if (!token) {
     throw new AppError('Authentication required', 401);
@@ -168,7 +168,7 @@ export async function uploadFile(
   file: File,
   additionalData?: Record<string, any>
 ): Promise<any> {
-  const token = localStorage.getItem("auth_token");
+  const token = localStorage.getItem("authToken");
 
   if (!token) {
     throw new AppError('Authentication required', 401);
