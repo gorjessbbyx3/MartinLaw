@@ -61,6 +61,14 @@ export function Navigation() {
               >
                 Contact
               </button>
+              <Link href="/client-portal">
+                <button 
+                  className="text-muted-foreground hover:text-navy-700 px-3 py-2 text-sm font-medium transition-colors"
+                  data-testid="button-nav-client-portal"
+                >
+                  Client Portal
+                </button>
+              </Link>
               <Button 
                 onClick={() => scrollToSection('consultation')} 
                 className="btn-navy"
@@ -121,6 +129,15 @@ export function Navigation() {
               >
                 Contact
               </button>
+              <Link href="/client-portal">
+                <button 
+                  className="block px-3 py-2 text-base font-medium text-muted-foreground hover:text-navy-700 w-full text-left"
+                  data-testid="button-mobile-nav-client-portal"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Client Portal
+                </button>
+              </Link>
               <Button 
                 onClick={() => scrollToSection('consultation')} 
                 className="btn-navy w-full mt-4"
