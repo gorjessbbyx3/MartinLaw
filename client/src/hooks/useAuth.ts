@@ -23,7 +23,7 @@ export function useAuth() {
   const token = localStorage.getItem("authToken");
   
   const { data: user, isLoading, error } = useQuery<User>({
-    queryKey: ["/auth/user"],
+    queryKey: ["/api/auth/user"],
     enabled: !!token,
     retry: false,
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -38,7 +38,7 @@ export function useAuth() {
 }
 
 export async function fetchUserProfile(): Promise<User> {
-  const response = await apiRequest('GET', '/auth/user');
+  const response = await apiRequest('GET', '/api/auth/user');
   return response.json();
 }
 
@@ -47,12 +47,12 @@ export function useLogin() {
   
   return useMutation<LoginResponse, Error, LoginRequest>({
     mutationFn: async (credentials) => {
-      const response = await apiRequest('POST', '/auth/login', credentials);
+      const response = await apiRequest('POST', '/api/auth/login', credentials);
       return response.json();
     },
     onSuccess: (data) => {
       localStorage.setItem("authToken", data.token);
-      queryClient.setQueryData(["/auth/user"], data.user);
+      queryClient.setQueryData(["/api/auth/user"], data.user);
     },
   });
 }
