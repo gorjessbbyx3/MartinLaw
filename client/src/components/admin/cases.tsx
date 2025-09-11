@@ -12,6 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/api";
 import { Plus, Briefcase, Calendar, DollarSign, User, Edit, Clock } from "lucide-react";
+import type { Case, Client } from "@shared/schema";
 
 interface CaseFormData {
   clientId: string;
@@ -35,12 +36,12 @@ export function Cases() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: cases, isLoading } = useQuery({
+  const { data: cases = [], isLoading } = useQuery<Case[]>({
     queryKey: ["/api/cases"],
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: clients } = useQuery({
+  const { data: clients = [] } = useQuery<Client[]>({
     queryKey: ["/api/clients"],
     staleTime: 5 * 60 * 1000,
   });

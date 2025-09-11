@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/api";
-import { insertClientSchema } from "@shared/schema";
+import { insertClientSchema, type Client } from "@shared/schema";
 import { Plus, Mail, Phone, Calendar, Briefcase, Edit } from "lucide-react";
 
 interface ClientFormData {
@@ -36,7 +36,7 @@ export function Clients() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: clients, isLoading } = useQuery({
+  const { data: clients = [], isLoading } = useQuery<Client[]>({
     queryKey: ["/api/clients"],
     staleTime: 5 * 60 * 1000,
   });

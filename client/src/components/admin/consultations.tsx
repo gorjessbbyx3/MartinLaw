@@ -8,17 +8,18 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/api";
 import { Calendar, Clock, DollarSign, User, Edit } from "lucide-react";
+import type { Consultation, Client } from "@shared/schema";
 
 export function Consultations() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: consultations, isLoading } = useQuery({
+  const { data: consultations = [], isLoading } = useQuery<Consultation[]>({
     queryKey: ["/api/consultations"],
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: clients } = useQuery({
+  const { data: clients = [] } = useQuery<Client[]>({
     queryKey: ["/api/clients"],
     staleTime: 5 * 60 * 1000,
   });

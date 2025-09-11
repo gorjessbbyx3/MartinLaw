@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/api";
 import { Plus, FileText, Calendar, DollarSign, User, Edit, Download } from "lucide-react";
+import type { Invoice, Client, Case } from "@shared/schema";
 
 interface InvoiceFormData {
   clientId: string;
@@ -39,12 +40,12 @@ export function Invoices() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const { data: invoices, isLoading } = useQuery({
+  const { data: invoices = [], isLoading } = useQuery<Invoice[]>({
     queryKey: ["/api/invoices"],
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: clients } = useQuery({
+  const { data: clients = [] } = useQuery<Client[]>({
     queryKey: ["/api/clients"],
     staleTime: 5 * 60 * 1000,
   });

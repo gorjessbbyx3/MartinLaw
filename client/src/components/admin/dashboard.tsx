@@ -1,39 +1,40 @@
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Calendar, Briefcase, FileText, DollarSign, Clock } from "lucide-react";
+import type { Client, Consultation, Case, Invoice } from "@shared/schema";
 
 export function Dashboard() {
-  const { data: clients } = useQuery({
+  const { data: clients = [] } = useQuery<Client[]>({
     queryKey: ["/api/clients"],
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: consultations } = useQuery({
+  const { data: consultations = [] } = useQuery<Consultation[]>({
     queryKey: ["/api/consultations"],
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: cases } = useQuery({
+  const { data: cases = [] } = useQuery<Case[]>({
     queryKey: ["/api/cases"],
     staleTime: 5 * 60 * 1000,
   });
 
-  const { data: invoices } = useQuery({
+  const { data: invoices = [] } = useQuery<Invoice[]>({
     queryKey: ["/api/invoices"],
     staleTime: 5 * 60 * 1000,
   });
 
-  const totalClients = clients?.length || 0;
-  const totalConsultations = consultations?.length || 0;
-  const totalCases = cases?.length || 0;
-  const totalInvoices = invoices?.length || 0;
+  const totalClients = clients.length;
+  const totalConsultations = consultations.length;
+  const totalCases = cases.length;
+  const totalInvoices = invoices.length;
 
-  const pendingConsultations = consultations?.filter(c => c.status === 'scheduled')?.length || 0;
-  const activeCases = cases?.filter(c => c.status === 'active')?.length || 0;
-  const unpaidInvoices = invoices?.filter(i => i.status === 'sent' || i.status === 'overdue')?.length || 0;
+  const pendingConsultations = consultations.filter(c => c.status === 'scheduled').length;
+  const activeCases = cases.filter(c => c.status === 'active').length;
+  const unpaidInvoices = invoices.filter(i => i.status === 'sent' || i.status === 'overdue').length;
 
-  const totalRevenue = invoices?.filter(i => i.status === 'paid')
-    ?.reduce((sum, invoice) => sum + parseFloat(invoice.totalAmount), 0) || 0;
+  const totalRevenue = invoices.filter(i => i.status === 'paid')
+    .reduce((sum, invoice) => sum + parseFloat(invoice.totalAmount), 0);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -42,8 +43,8 @@ export function Dashboard() {
     }).format(amount);
   };
 
-  const recentConsultations = consultations?.slice(0, 5) || [];
-  const recentCases = cases?.slice(0, 5) || [];
+  const recentConsultations = consultations.slice(0, 5);
+  const recentCases = cases.slice(0, 5);
 
   return (
     <div className="space-y-8">
