@@ -116,7 +116,7 @@ export default function DigitalSignature({
     ctx.moveTo(x, y);
   };
 
-  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasEvent>) => {
+  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
     e.preventDefault();
     if (!isDrawing || disabled || signatureCompleted) return;
 
