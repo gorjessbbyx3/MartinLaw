@@ -17,11 +17,11 @@ export function Hero() {
           {/* Content */}
           <div className="space-y-10">
             <h1 className="text-5xl lg:text-7xl font-bold leading-tight tracking-tight text-foreground">
-              Treating each case like we're young and it's 1971
+              Experienced Legal Advocacy When It Matters Most
             </h1>
             
             <p className="text-xl lg:text-2xl text-muted-foreground leading-relaxed max-w-2xl">
-              25 years of trial experience across state, federal, territorial and military courts in Hawaii.
+              Hawaii's trusted litigation attorney with 25+ years defending clients across state, federal, territorial, and military courts. Dedicated to achieving the best possible outcomes for every case.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 pt-4">
