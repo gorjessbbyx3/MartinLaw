@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { GraduationCap, Award, Scale, Heart } from "lucide-react";
+import { Button } from './ui/button';
 
 export function About() {
   return (
@@ -30,8 +31,8 @@ export function About() {
               </p>
             </div>
             <div className="mt-12 flex flex-col sm:flex-row gap-4">
-              <Button 
-                onClick={() => scrollToSection('consultation')} 
+              <Button
+                onClick={() => scrollToSection('consultation')}
                 className="btn-navy px-8 py-4 text-lg"
               >
                 Schedule Consultation
@@ -49,9 +50,9 @@ export function About() {
           <div className="animate-slide-up">
             <div className="relative">
               <div className="absolute -inset-4 bg-gradient-to-r from-navy-500 to-gold-400 rounded-3xl blur opacity-20"></div>
-              <img 
-                src="https://images.unsplash.com/photo-1556157382-97eda2d62296?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600" 
-                alt="Professional lawyer in office setting with law books and gavel" 
+              <img
+                src="https://images.unsplash.com/photo-1556157382-97eda2d62296?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=600"
+                alt="Professional lawyer in office setting with law books and gavel"
                 className="relative rounded-3xl shadow-2xl w-full animate-float"
                 data-testid="img-about-lawyer"
               />
