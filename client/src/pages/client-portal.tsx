@@ -237,6 +237,68 @@ export default function ClientPortal() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Dashboard Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Card data-testid="card-dashboard-cases">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Active Cases</p>
+                  <p className="text-2xl font-bold text-navy-900">
+                    {clientData.cases.filter(c => c.status === 'active').length}
+                  </p>
+                </div>
+                <Briefcase className="h-8 w-8 text-navy-900" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card data-testid="card-dashboard-consultations">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Upcoming Consultations</p>
+                  <p className="text-2xl font-bold text-navy-900">
+                    {clientData.consultations.filter(c => c.status === 'scheduled' && new Date(c.scheduledAt) > new Date()).length}
+                  </p>
+                </div>
+                <Calendar className="h-8 w-8 text-navy-900" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card data-testid="card-dashboard-invoices">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Pending Invoices</p>
+                  <p className="text-2xl font-bold text-navy-900">
+                    {clientData.invoices.filter(i => i.status === 'sent' || i.status === 'overdue').length}
+                  </p>
+                </div>
+                <FileText className="h-8 w-8 text-navy-900" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card data-testid="card-dashboard-total-fees">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">Total Outstanding</p>
+                  <p className="text-2xl font-bold text-navy-900">
+                    {formatCurrency(
+                      clientData.invoices
+                        .filter(i => i.status === 'sent' || i.status === 'overdue')
+                        .reduce((sum, invoice) => sum + parseFloat(invoice.totalAmount), 0)
+                    )}
+                  </p>
+                </div>
+                <DollarSign className="h-8 w-8 text-navy-900" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
         {/* Client Info Card */}
         <Card className="mb-8" data-testid="card-client-info">
           <CardHeader>

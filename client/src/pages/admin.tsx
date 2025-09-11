@@ -10,7 +10,8 @@ import { Clients } from "@/components/admin/clients";
 import { Consultations } from "@/components/admin/consultations";
 import { Cases } from "@/components/admin/cases";
 import { Invoices } from "@/components/admin/invoices";
-import { Users, Calendar, Briefcase, FileText, LogOut, Scale } from "lucide-react";
+import { Documents } from "@/components/admin/documents";
+import { Users, Calendar, Briefcase, FileText, LogOut, Scale, Upload } from "lucide-react";
 
 export default function Admin() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -72,7 +73,7 @@ export default function Admin() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-          <TabsList className="grid w-full grid-cols-5 bg-white p-1 border border-border rounded-lg">
+          <TabsList className="grid w-full grid-cols-6 bg-white p-1 border border-border rounded-lg">
             <TabsTrigger 
               value="dashboard" 
               className="flex items-center space-x-2 data-[state=active]:bg-navy-900 data-[state=active]:text-white"
@@ -113,6 +114,14 @@ export default function Admin() {
               <FileText className="h-4 w-4" />
               <span className="hidden sm:inline">Invoices</span>
             </TabsTrigger>
+            <TabsTrigger 
+              value="documents" 
+              className="flex items-center space-x-2 data-[state=active]:bg-navy-900 data-[state=active]:text-white"
+              data-testid="tab-documents"
+            >
+              <Upload className="h-4 w-4" />
+              <span className="hidden sm:inline">Documents</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="dashboard" data-testid="content-dashboard">
@@ -133,6 +142,10 @@ export default function Admin() {
 
           <TabsContent value="invoices" data-testid="content-invoices">
             <Invoices />
+          </TabsContent>
+
+          <TabsContent value="documents" data-testid="content-documents">
+            <Documents />
           </TabsContent>
         </Tabs>
       </div>

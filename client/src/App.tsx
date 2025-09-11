@@ -9,6 +9,7 @@ import Consultation from "@/pages/consultation";
 import Admin from "@/pages/admin";
 import AdminLogin from "@/pages/admin-login";
 import ClientPortal from "@/pages/client-portal";
+import ErrorBoundary from "@/components/error-boundary";
 
 function Router() {
   return (
@@ -28,7 +29,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <Toaster />
-        <Router />
+        <ErrorBoundary>
+          <Router />
+        </ErrorBoundary>
       </TooltipProvider>
     </QueryClientProvider>
   );

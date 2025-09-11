@@ -111,6 +111,22 @@ export const clientTokens = pgTable("client_tokens", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Documents table
+export const documents = pgTable("documents", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  filename: varchar("filename").notNull().unique(),
+  originalName: varchar("original_name").notNull(),
+  size: integer("size").notNull(),
+  mimeType: varchar("mime_type").notNull(),
+  clientId: varchar("client_id").references(() => clients.id),
+  caseId: varchar("case_id").references(() => cases.id),
+  category: varchar("category").notNull(),
+  description: text("description"),
+  uploadedBy: varchar("uploaded_by").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Type exports
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
@@ -136,6 +152,9 @@ export type InsertAiChat = typeof aiChats.$inferInsert;
 export type ClientToken = typeof clientTokens.$inferSelect;
 export type InsertClientToken = typeof clientTokens.$inferInsert;
 
+export type Document = typeof documents.$inferSelect;
+export type InsertDocument = typeof documents.$inferInsert;
+
 // Zod schemas for validation
 export const insertUserSchema = createInsertSchema(users);
 export const insertClientSchema = createInsertSchema(clients);
@@ -145,3 +164,4 @@ export const insertInvoiceSchema = createInsertSchema(invoices);
 export const insertCommunicationSchema = createInsertSchema(communications);
 export const insertAiChatSchema = createInsertSchema(aiChats);
 export const insertClientTokenSchema = createInsertSchema(clientTokens);
+export const insertDocumentSchema = createInsertSchema(documents);

@@ -451,6 +451,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Document management routes
+  app.get("/api/documents", authenticateToken, async (req, res) => {
+    try {
+      const documents = await storage.getAllDocuments();
+      res.json(documents);
+    } catch (error) {
+      console.error("Get documents error:", error);
+      res.status(500).json({ message: "Failed to fetch documents" });
+    }
+  });
+
+  app.post("/api/documents/upload", authenticateToken, async (req, res) => {
+    try {
+      // This would typically use multer middleware for file uploads
+      // For now, we'll return a placeholder response
+      res.status(501).json({ message: "File upload not yet implemented" });
+    } catch (error) {
+      console.error("Upload document error:", error);
+      res.status(500).json({ message: "Failed to upload document" });
+    }
+  });
+
+  app.get("/api/documents/:id/download", authenticateToken, async (req, res) => {
+    try {
+      const document = await storage.getDocument(req.params.id);
+      if (!document) {
+        return res.status(404).json({ message: "Document not found" });
+      }
+      
+      // This would typically serve the file from storage
+      res.status(501).json({ message: "File download not yet implemented" });
+    } catch (error) {
+      console.error("Download document error:", error);
+      res.status(500).json({ message: "Failed to download document" });
+    }
+  });
+
+  app.delete("/api/documents/:id", authenticateToken, async (req, res) => {
+    try {
+      await storage.deleteDocument(req.params.id);
+      await storage.logAction(req.user!.userId, "delete", "document", req.params.id, {});
+      res.json({ message: "Document deleted successfully" });
+    } catch (error) {
+      console.error("Delete document error:", error);
+      res.status(500).json({ message: "Failed to delete document" });
+    }
+  });
+
   // Token cleanup endpoint (for admin use)
   app.post("/api/admin/cleanup-tokens", authenticateToken, requireAdminRole, async (req, res) => {
     try {
