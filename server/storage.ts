@@ -305,22 +305,22 @@ export class DatabaseStorage implements IStorage {
 
   async deleteExpiredTokens(): Promise<void> {
     await db.delete(clientTokens).where(sql`expires_at < NOW()`);
-  },
+  }
 
   // Contact Messages
   async getAllContactMessages(): Promise<ContactMessage[]> {
     return await db.select().from(contactMessages).orderBy(desc(contactMessages.createdAt));
-  },
+  }
 
   async getContactMessage(id: string): Promise<ContactMessage | null> {
     const result = await db.select().from(contactMessages).where(eq(contactMessages.id, id));
     return result[0] || null;
-  },
+  }
 
   async createContactMessage(data: InsertContactMessage): Promise<ContactMessage> {
     const result = await db.insert(contactMessages).values(data).returning();
     return result[0];
-  },
+  }
 
   async updateContactMessage(id: string, data: Partial<InsertContactMessage>): Promise<ContactMessage> {
     const result = await db.update(contactMessages)
@@ -328,11 +328,11 @@ export class DatabaseStorage implements IStorage {
       .where(eq(contactMessages.id, id))
       .returning();
     return result[0];
-  },
+  }
 
   async deleteContactMessage(id: string): Promise<void> {
     await db.delete(contactMessages).where(eq(contactMessages.id, id));
-  },
+  }
 
   async markContactMessageAsRead(id: string): Promise<ContactMessage> {
     const result = await db.update(contactMessages)
@@ -340,14 +340,14 @@ export class DatabaseStorage implements IStorage {
       .where(eq(contactMessages.id, id))
       .returning();
     return result[0];
-  },
+  }
 
   async getUnreadContactMessagesCount(): Promise<number> {
     const result = await db.select({ count: sql<number>`count(*)` })
       .from(contactMessages)
       .where(eq(contactMessages.status, "unread"));
     return result[0]?.count || 0;
-  },
+  }
 
   // AI Chat operations
   async getAiChat(sessionId: string): Promise<AiChat | undefined> {
@@ -441,7 +441,7 @@ export class DatabaseStorage implements IStorage {
       return result;
     };
 
-    return redactSensitive(sanitized);
+    return redactSensitive(details);
   }
 
   async logAction(
