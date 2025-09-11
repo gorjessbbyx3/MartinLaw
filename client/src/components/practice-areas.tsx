@@ -54,7 +54,7 @@ export function PracticeAreas() {
             <Card key={index} className="group hover:shadow-lg transition-all duration-300 border-0 shadow-md">
               <CardHeader className="pb-4">
                 <div className="w-12 h-12 bg-navy-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-navy-200 transition-colors">
-                  <area.icon className="w-6 h-6 text-navy-600" />
+                  {<area.icon className="w-6 h-6 text-navy-600" />}
                 </div>
                 <CardTitle className="text-xl font-serif text-navy-900 group-hover:text-navy-700 transition-colors">
                   {area.title}

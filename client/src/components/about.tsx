@@ -1,6 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { GraduationCap, Award, Scale, Heart } from "lucide-react";
-import { Button } from './ui/button';
+import { Button } from '@/components/ui/button';
 
 export function About() {
   return (
