@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Award, Shield, Gavel } from "lucide-react";
-import attorneyPhoto from "@assets/image_1757573946693.jpeg";
+import attorneyPhoto from "@assets/IMG_4760_1757575612514.jpeg";
 
 export function Hero() {
   const scrollToSection = (sectionId: string) => {
