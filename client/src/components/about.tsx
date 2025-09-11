@@ -3,13 +3,6 @@ import { GraduationCap, Award, Scale, Heart } from "lucide-react";
 import { Button } from './ui/button';
 
 export function About() {
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
     <section id="about" className="section-padding bg-white relative">
       <div className="absolute inset-0 bg-gradient-to-br from-navy-50/30 to-transparent"></div>
