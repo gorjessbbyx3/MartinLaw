@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Scale } from "lucide-react";
+import { Menu, X } from "lucide-react";
 
 export function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -27,35 +27,24 @@ export function Navigation() {
 
   return (
     <nav 
-      className={`sticky top-0 z-50 transition-all duration-500 ease-out ${
+      className={`sticky top-0 z-50 transition-all duration-300 ${
         isScrolled 
-          ? 'bg-white/95 backdrop-blur-xl border-b border-platinum-300/30 shadow-lg shadow-charcoal-900/5' 
-          : 'bg-white border-b border-platinum-100'
+          ? 'bg-black/95 backdrop-blur-sm border-b border-gray-800' 
+          : 'bg-black border-b border-gray-800'
       }`}
     >
-      <div className="container-custom">
-        <div className="flex justify-between items-center h-20 lg:h-24">
-          {/* Premium Brand Identity */}
-          <div className="flex items-center group">
-            <div className="flex items-center space-x-3">
-              <div className="relative p-2.5 rounded-xl bg-gradient-to-br from-charcoal-900 to-charcoal-700 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                <Scale className="h-6 w-6 lg:h-7 lg:w-7 text-bronze-500" />
-                <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-bronze-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              </div>
-              <div className="flex flex-col">
-                <h1 className="typography-h4 lg:typography-h3 text-gradient font-display tracking-tight" data-testid="text-law-firm-name">
-                  Mason Martin Law
-                </h1>
-                <div className="typography-overline text-platinum-500 -mt-1 hidden lg:block">
-                  Premium Legal Services
-                </div>
-              </div>
-            </div>
+      <div className="container">
+        <div className="flex justify-between items-center h-16">
+          {/* Simple Brand */}
+          <div className="flex items-center">
+            <h1 className="text-xl font-bold text-white" data-testid="text-law-firm-name">
+              Mason Martin Law
+            </h1>
           </div>
           
           {/* Desktop Navigation */}
           <div className="hidden lg:block">
-            <div className="flex items-center space-x-1">
+            <div className="flex items-center space-x-6">
               {[
                 { id: 'home', label: 'Home' },
                 { id: 'about', label: 'About' },
@@ -66,19 +55,17 @@ export function Navigation() {
                 <button 
                   key={item.id}
                   onClick={() => scrollToSection(item.id)} 
-                  className="nav-link-premium"
+                  className="nav-link"
                   data-testid={`button-nav-${item.id}`}
                 >
                   {item.label}
                 </button>
               ))}
               
-              <div className="h-6 w-px bg-platinum-300 mx-4" />
-              
               <Button 
                 variant="ghost"
                 asChild
-                className="nav-link-premium"
+                className="nav-link"
                 data-testid="button-nav-client-portal"
               >
                 <Link href="/client-portal">
@@ -88,7 +75,7 @@ export function Navigation() {
               
               <Button 
                 onClick={() => scrollToSection('consultation')} 
-                className="btn-premium-primary ml-4"
+                className="btn-primary ml-6"
                 data-testid="button-schedule-consultation"
               >
                 Schedule Consultation
@@ -104,58 +91,55 @@ export function Navigation() {
               data-testid="button-mobile-menu"
               aria-label="Toggle mobile menu"
             >
-              <div className="relative">
-                {isMobileMenuOpen ? (
-                  <X className="h-6 w-6 text-charcoal-700 transition-transform duration-300 rotate-90" />
-                ) : (
-                  <Menu className="h-6 w-6 text-charcoal-700 transition-transform duration-300" />
-                )}
-              </div>
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6 text-white" />
+              ) : (
+                <Menu className="h-6 w-6 text-white" />
+              )}
             </button>
           </div>
         </div>
         
-        {/* Premium Mobile Menu */}
-        <div className={`lg:hidden overflow-hidden transition-all duration-500 ease-out ${
+        {/* Mobile Menu */}
+        <div className={`lg:hidden transition-all duration-300 ${
           isMobileMenuOpen 
             ? 'max-h-screen opacity-100' 
-            : 'max-h-0 opacity-0'
+            : 'max-h-0 opacity-0 overflow-hidden'
         }`}>
           <div className="mobile-menu-content">
-            <div className="py-6 space-y-2">
+            <div className="py-4 space-y-1">
               {[
                 { id: 'home', label: 'Home' },
                 { id: 'about', label: 'About' },
                 { id: 'practice-areas', label: 'Practice Areas' },
                 { id: 'radio-show', label: 'Radio Show' },
                 { id: 'contact', label: 'Contact' }
-              ].map((item, index) => (
+              ].map((item) => (
                 <button 
                   key={item.id}
                   onClick={() => scrollToSection(item.id)} 
                   className="mobile-nav-link"
-                  style={{ animationDelay: `${index * 50}ms` }}
                   data-testid={`button-mobile-nav-${item.id}`}
                 >
-                  <span className="relative z-10">{item.label}</span>
+                  {item.label}
                 </button>
               ))}
               
-              <div className="pt-4 mt-4 border-t border-platinum-300/30">
+              <div className="pt-4 mt-4 border-t border-gray-800">
                 <Button 
                   variant="ghost"
                   asChild
-                  className="mobile-nav-link justify-start"
+                  className="mobile-nav-link"
                   data-testid="button-mobile-nav-client-portal"
                 >
                   <Link href="/client-portal" onClick={() => setIsMobileMenuOpen(false)}>
-                    <span className="relative z-10">Client Portal</span>
+                    Client Portal
                   </Link>
                 </Button>
                 
                 <Button 
                   onClick={() => scrollToSection('consultation')} 
-                  className="btn-premium-primary w-full mt-4 justify-center"
+                  className="btn-primary w-full mt-4"
                   data-testid="button-mobile-schedule-consultation"
                 >
                   Schedule Consultation
