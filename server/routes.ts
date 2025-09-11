@@ -11,7 +11,27 @@ import { uploadSingle, handleMulterError } from "./multer-config";
 import { join } from "path";
 import { existsSync, unlinkSync } from "fs";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
+// Validate JWT secret is properly configured
+const validateJWTSecret = (): string => {
+  const secret = process.env.JWT_SECRET;
+  
+  if (!secret) {
+    console.error("CRITICAL SECURITY ERROR: JWT_SECRET environment variable is not set!");
+    console.error("Please set a secure JWT_SECRET in your environment variables before starting the application.");
+    console.error("Example: JWT_SECRET=your-very-secure-random-secret-key-here");
+    throw new Error("JWT_SECRET environment variable is required for secure authentication");
+  }
+  
+  if (secret.length < 32) {
+    console.error("SECURITY WARNING: JWT_SECRET is too short. Please use a secret with at least 32 characters.");
+    console.error("Current length:", secret.length);
+    throw new Error("JWT_SECRET must be at least 32 characters long for security");
+  }
+  
+  return secret;
+};
+
+const JWT_SECRET = validateJWTSecret();
 
 // Setup automatic token cleanup (every hour) - runs once when module loads
 setInterval(async () => {
