@@ -11,46 +11,45 @@ export function Hero() {
   };
 
   return (
-    <section id="home" className="bg-black text-white py-20">
+    <section id="home" className="bg-background py-24 lg:py-32">
       <div className="container mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
           {/* Content */}
-          <div className="space-y-8">
-            <h1 className="text-4xl lg:text-6xl font-bold leading-tight">
+          <div className="space-y-10">
+            <h1 className="text-5xl lg:text-7xl font-bold leading-tight tracking-tight text-foreground">
               Treating each case like we're young and it's 1971
             </h1>
             
-            <p className="text-xl text-gray-300 leading-relaxed max-w-lg">
+            <p className="text-xl lg:text-2xl text-muted-foreground leading-relaxed max-w-2xl">
               25 years of trial experience across state, federal, territorial and military courts in Hawaii.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-6 pt-4">
               <Button 
                 onClick={() => scrollToSection('consultation')} 
-                className="bg-white text-black hover:bg-gray-100 px-8 py-3 text-lg font-semibold"
+                className="btn-primary text-lg"
                 data-testid="button-schedule-consultation"
               >
-                <Calendar className="mr-2 w-5 h-5" />
+                <Calendar className="mr-3 w-5 h-5" />
                 Schedule Consultation
               </Button>
               
               <Button 
-                variant="outline"
                 onClick={() => scrollToSection('practice-areas')} 
-                className="border-white text-white hover:bg-white hover:text-black px-8 py-3 text-lg font-semibold"
+                className="btn-secondary text-lg"
                 data-testid="button-view-practice-areas"
               >
                 View Practice Areas
               </Button>
             </div>
 
-            <div className="pt-4">
+            <div className="pt-6">
               <Button 
                 variant="ghost"
-                className="text-gray-300 hover:text-white p-0 h-auto"
+                className="text-muted-foreground hover:text-foreground p-0 h-auto text-lg"
                 data-testid="button-call-now"
               >
-                <Phone className="mr-2 w-4 h-4" />
+                <Phone className="mr-3 w-5 h-5" />
                 Call: (808) 555-0123
               </Button>
             </div>
@@ -58,12 +57,15 @@ export function Hero() {
 
           {/* Image */}
           <div className="lg:pl-8">
-            <img 
-              src={attorneyPhoto} 
-              alt="Mason Martin - Attorney" 
-              className="rounded-lg w-full max-w-lg mx-auto"
-              data-testid="img-attorney-headshot"
-            />
+            <div className="relative">
+              <img 
+                src={attorneyPhoto} 
+                alt="Mason Martin - Attorney" 
+                className="rounded-2xl w-full max-w-lg mx-auto shadow-2xl"
+                data-testid="img-attorney-headshot"
+              />
+              <div className="absolute inset-0 rounded-2xl ring-1 ring-black/5"></div>
+            </div>
           </div>
         </div>
       </div>

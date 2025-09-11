@@ -77,56 +77,75 @@
   .container {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
   }
-  
+
   .section {
-    @apply py-16 lg:py-24;
+    @apply py-20 lg:py-32;
   }
-  
+
   .simple-card {
-    @apply border border-border rounded-lg p-6 bg-card;
-    transition: all 0.2s ease;
+    @apply border-0 rounded-xl p-8 bg-card shadow-sm;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
   }
-  
+
   .simple-card:hover {
-    @apply border-muted bg-muted/50;
+    @apply bg-card;
+    box-shadow: 0 10px 25px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    transform: translateY(-2px);
   }
-  
+
   .animate-fade-in {
-    animation: fadeIn 0.5s ease-out;
+    animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   }
-  
+
   @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
+    from { opacity: 0; transform: translateY(32px); }
     to { opacity: 1; transform: translateY(0); }
   }
-  
-  /* Consistent button styles */
+
+  /* Tesla-inspired button styles */
   .btn-primary {
-    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-3 rounded-lg font-medium transition-colors;
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-4 rounded-full font-semibold tracking-wide transition-all duration-300;
+    box-shadow: 0 4px 14px 0 rgb(0 0 0 / 0.1);
   }
-  
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px 0 rgb(0 0 0 / 0.15);
+  }
+
   .btn-secondary {
-    @apply border border-border text-foreground hover:bg-secondary hover:text-secondary-foreground px-6 py-3 rounded-lg font-medium transition-colors;
+    @apply border-2 border-border text-foreground hover:border-primary hover:bg-primary hover:text-primary-foreground px-8 py-4 rounded-full font-semibold tracking-wide transition-all duration-300;
   }
-  
-  .btn-navy {
-    @apply bg-slate-800 text-white hover:bg-slate-700 px-6 py-3 rounded-lg font-medium transition-colors;
+
+  .btn-secondary:hover {
+    transform: translateY(-1px);
   }
-  
-  /* Consistent nav styles */
+
+  .btn-accent {
+    @apply bg-accent text-accent-foreground hover:bg-accent/90 px-8 py-4 rounded-full font-semibold tracking-wide transition-all duration-300;
+    box-shadow: 0 4px 14px 0 rgb(59 130 246 / 0.2);
+  }
+
+  .btn-accent:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px 0 rgb(59 130 246 / 0.3);
+  }
+
+  /* Clean navigation styles */
   .nav-link {
-    @apply px-4 py-2 text-foreground hover:text-muted-foreground transition-colors font-medium;
+    @apply px-6 py-3 text-foreground/80 hover:text-foreground transition-all duration-300 font-medium;
   }
-  
+
   .mobile-menu-trigger {
-    @apply p-2 rounded-lg hover:bg-muted transition-colors;
+    @apply p-3 rounded-full hover:bg-muted/50 transition-all duration-300;
   }
-  
+
   .mobile-nav-link {
-    @apply w-full text-left px-4 py-3 text-foreground hover:bg-muted rounded-lg transition-colors;
+    @apply w-full text-left px-6 py-4 text-foreground/80 hover:text-foreground hover:bg-muted/30 rounded-xl transition-all duration-300 font-medium;
   }
-  
+
   .mobile-menu-content {
-    @apply border-t border-border bg-background;
+    @apply border-t border-border/50 bg-background/95 backdrop-blur-sm;
   }
 }

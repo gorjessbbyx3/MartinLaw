@@ -27,17 +27,17 @@ export function Navigation() {
 
   return (
     <nav 
-      className={`sticky top-0 z-50 transition-all duration-300 ${
+      className={`sticky top-0 z-50 transition-all duration-500 ${
         isScrolled 
-          ? 'bg-black/95 backdrop-blur-sm border-b border-gray-800' 
-          : 'bg-black border-b border-gray-800'
+          ? 'bg-background/95 backdrop-blur-md border-b border-border/50 shadow-sm' 
+          : 'bg-background/80 backdrop-blur-sm'
       }`}
     >
       <div className="container">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Simple Brand */}
           <div className="flex items-center">
-            <h1 className="text-xl font-bold text-white" data-testid="text-law-firm-name">
+            <h1 className="text-2xl font-bold text-foreground tracking-tight" data-testid="text-law-firm-name">
               Mason Martin Law
             </h1>
           </div>
@@ -92,22 +92,22 @@ export function Navigation() {
               aria-label="Toggle mobile menu"
             >
               {isMobileMenuOpen ? (
-                <X className="h-6 w-6 text-white" />
+                <X className="h-6 w-6 text-foreground" />
               ) : (
-                <Menu className="h-6 w-6 text-white" />
+                <Menu className="h-6 w-6 text-foreground" />
               )}
             </button>
           </div>
         </div>
         
         {/* Mobile Menu */}
-        <div className={`lg:hidden transition-all duration-300 ${
+        <div className={`lg:hidden transition-all duration-500 ${
           isMobileMenuOpen 
             ? 'max-h-screen opacity-100' 
             : 'max-h-0 opacity-0 overflow-hidden'
         }`}>
           <div className="mobile-menu-content">
-            <div className="py-4 space-y-1">
+            <div className="py-6 space-y-2">
               {[
                 { id: 'home', label: 'Home' },
                 { id: 'about', label: 'About' },
@@ -125,7 +125,7 @@ export function Navigation() {
                 </button>
               ))}
               
-              <div className="pt-4 mt-4 border-t border-gray-800">
+              <div className="pt-6 mt-6 border-t border-border/50">
                 <Button 
                   variant="ghost"
                   asChild
@@ -139,7 +139,7 @@ export function Navigation() {
                 
                 <Button 
                   onClick={() => scrollToSection('consultation')} 
-                  className="btn-primary w-full mt-4"
+                  className="btn-primary w-full mt-6"
                   data-testid="button-mobile-schedule-consultation"
                 >
                   Schedule Consultation
