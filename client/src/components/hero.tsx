@@ -10,29 +10,37 @@ export function Hero() {
   };
 
   return (
-    <section id="home" className="hero-gradient text-white py-20 lg:py-32">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <section id="home" className="hero-gradient text-white py-24 lg:py-40 relative overflow-hidden">
+      <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.02"%3E%3Ccircle cx="30" cy="30" r="2"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
+      <div className="container-custom relative z-10">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="animate-fade-in">
-            <h1 className="text-4xl lg:text-6xl font-serif font-bold leading-tight mb-6">
+            <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-white/20">
+              <div className="w-2 h-2 bg-gold-400 rounded-full animate-pulse"></div>
+              <span className="text-sm font-medium text-gold-400">Available for New Clients</span>
+            </div>
+            <h1 className="text-5xl lg:text-7xl font-serif font-bold leading-tight mb-8">
               Experienced Litigation Attorney in 
-              <span className="text-gold-400"> Honolulu, Hawaii</span>
+              <span className="text-gold-400 block lg:inline"> Honolulu, Hawaii</span>
             </h1>
-            <p className="text-xl lg:text-2xl mb-8 text-navy-50 leading-relaxed">
+            <p className="text-xl lg:text-2xl mb-10 text-navy-50/90 leading-relaxed max-w-2xl">
               25+ years of trial, appellate, administrative and military hearings across state, federal, territorial and military courts
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row gap-6 mb-12">
               <Button 
                 onClick={() => scrollToSection('consultation')} 
-                className="btn-gold px-8 py-4 text-lg"
+                className="btn-gold px-10 py-5 text-lg font-semibold shadow-2xl"
                 data-testid="button-schedule-free-consultation"
               >
                 Schedule Free Consultation
+                <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
               </Button>
               <Button 
                 onClick={() => scrollToSection('practice-areas')} 
                 variant="outline"
-                className="border-2 border-white text-white px-8 py-4 text-lg hover:bg-white hover:text-navy-900 transition-all"
+                className="glass-effect border-2 border-white/30 text-white px-10 py-5 text-lg font-semibold hover:bg-white/20 hover:border-white/50 transition-all duration-300"
                 data-testid="button-view-practice-areas"
               >
                 View Practice Areas
