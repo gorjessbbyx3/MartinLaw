@@ -41,7 +41,7 @@ export function Navigation() {
               Mason Martin Law
             </h1>
           </div>
-          
+
           {/* Desktop Navigation */}
           <div className="hidden lg:block">
             <div className="flex items-center space-x-6">
@@ -61,7 +61,7 @@ export function Navigation() {
                   {item.label}
                 </button>
               ))}
-              
+
               <Button 
                 variant="ghost"
                 asChild
@@ -72,7 +72,7 @@ export function Navigation() {
                   Client Portal
                 </Link>
               </Button>
-              
+
               <Button 
                 onClick={() => scrollToSection('consultation')} 
                 className="btn-primary ml-6"
@@ -82,7 +82,7 @@ export function Navigation() {
               </Button>
             </div>
           </div>
-          
+
           {/* Mobile Menu Button */}
           <div className="lg:hidden">
             <button 
@@ -99,7 +99,7 @@ export function Navigation() {
             </button>
           </div>
         </div>
-        
+
         {/* Mobile Menu */}
         <div className={`lg:hidden transition-all duration-500 ${
           isMobileMenuOpen 
@@ -124,7 +124,7 @@ export function Navigation() {
                   {item.label}
                 </button>
               ))}
-              
+
               <div className="pt-6 mt-6 border-t border-border/50">
                 <Button 
                   variant="ghost"
@@ -136,7 +136,7 @@ export function Navigation() {
                     Client Portal
                   </Link>
                 </Button>
-                
+
                 <Button 
                   onClick={() => scrollToSection('consultation')} 
                   className="btn-primary w-full mt-6"

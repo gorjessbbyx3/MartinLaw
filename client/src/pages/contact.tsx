@@ -1,21 +1,14 @@
 
 import { Navigation } from "@/components/navigation";
-import { Hero } from "@/components/hero";
-import { PracticeAreas } from "@/components/practice-areas";
-import { RadioShow } from "@/components/radio-show";
-import { ConsultationForm } from "@/components/consultation-form";
-import { AiChat } from "@/components/ai-chat";
+import { ContactForm } from "@/components/contact-form";
 
-export default function Home() {
+export default function ContactPage() {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <Hero />
-      <PracticeAreas />
-      <RadioShow />
-      <section id="consultation" className="py-20 bg-muted/30">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ConsultationForm />
+          <ContactForm />
         </div>
       </section>
       <footer className="bg-navy-900 text-white py-16">
@@ -42,10 +35,10 @@ export default function Home() {
             <div>
               <h4 className="text-lg font-semibold mb-4 text-gold-400">Practice Areas</h4>
               <ul className="space-y-2 text-navy-100">
-                <li><a href="#practice-areas" className="hover:text-gold-400 transition-colors" data-testid="link-civil-litigation">Civil Litigation</a></li>
-                <li><a href="#practice-areas" className="hover:text-gold-400 transition-colors" data-testid="link-trial-advocacy">Trial Advocacy</a></li>
-                <li><a href="#practice-areas" className="hover:text-gold-400 transition-colors" data-testid="link-appellate-law">Appellate Law</a></li>
-                <li><a href="#practice-areas" className="hover:text-gold-400 transition-colors" data-testid="link-military-law">Military Law</a></li>
+                <li><a href="/#practice-areas" className="hover:text-gold-400 transition-colors" data-testid="link-civil-litigation">Civil Litigation</a></li>
+                <li><a href="/#practice-areas" className="hover:text-gold-400 transition-colors" data-testid="link-trial-advocacy">Trial Advocacy</a></li>
+                <li><a href="/#practice-areas" className="hover:text-gold-400 transition-colors" data-testid="link-appellate-law">Appellate Law</a></li>
+                <li><a href="/#practice-areas" className="hover:text-gold-400 transition-colors" data-testid="link-military-law">Military Law</a></li>
               </ul>
             </div>
             
@@ -54,7 +47,7 @@ export default function Home() {
               <ul className="space-y-2 text-navy-100">
                 <li><a href="/client-portal" className="hover:text-gold-400 transition-colors" data-testid="link-client-portal">Client Portal</a></li>
                 <li><a href="#" className="hover:text-gold-400 transition-colors" data-testid="link-legal-resources">Legal Resources</a></li>
-                <li><a href="#radio-show" className="hover:text-gold-400 transition-colors" data-testid="link-radio-archives">Radio Show Archives</a></li>
+                <li><a href="/#radio-show" className="hover:text-gold-400 transition-colors" data-testid="link-radio-archives">Radio Show Archives</a></li>
                 <li><a href="#" className="hover:text-gold-400 transition-colors" data-testid="link-case-studies">Case Studies</a></li>
               </ul>
             </div>
@@ -70,7 +63,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-      <AiChat />
     </div>
   );
 }
