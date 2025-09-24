@@ -76,6 +76,8 @@ export const uploadSingle = multer({
   }
 }).single('file');
 
+import multer from 'multer';
+
 // Error handler for multer
 export const handleMulterError = (error: any) => {
   if (error instanceof multer.MulterError) {

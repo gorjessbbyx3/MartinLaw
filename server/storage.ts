@@ -323,15 +323,36 @@ export class DatabaseStorage implements IStorage {
   }
 
   async updateContactMessage(id: string, data: Partial<InsertContactMessage>): Promise<ContactMessage> {
-    const result = await db.update(contactMessages)
-      .set({ ...data, updatedAt: new Date() })
-      .where(eq(contactMessages.id, id))
-      .returning();
-    return result[0];
+    try {
+      const result = await db.update(contactMessages)
+        .set({ ...data, updatedAt: new Date() })
+        .where(eq(contactMessages.id, id))
+        .returning();
+      
+      if (!result[0]) {
+        throw new Error(`Contact message with id ${id} not found`);
+      }
+      
+      return result[0];
+    } catch (error) {
+      console.error('Error updating contact message:', error);
+      throw error;
+    }
   }
 
   async deleteContactMessage(id: string): Promise<void> {
-    await db.delete(contactMessages).where(eq(contactMessages.id, id));
+    try {
+      const result = await db.delete(contactMessages)
+        .where(eq(contactMessages.id, id))
+        .returning();
+      
+      if (result.length === 0) {
+        throw new Error(`Contact message with id ${id} not found`);
+      }
+    } catch (error) {
+      console.error('Error deleting contact message:', error);
+      throw error;
+    }
   }
 
   async markContactMessageAsRead(id: string): Promise<ContactMessage> {

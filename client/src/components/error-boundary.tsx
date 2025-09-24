@@ -32,7 +32,15 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
     // Log to external service in production
     if (process.env.NODE_ENV === 'production') {
       // Send to logging service
-      console.error('Production error:', { error: error.message, stack: error.stack, componentStack: errorInfo.componentStack });
+      const errorData = {
+        message: error.message,
+        stack: error.stack,
+        componentStack: errorInfo.componentStack,
+        timestamp: new Date().toISOString(),
+        userAgent: navigator.userAgent
+      };
+      console.error('Production error:', errorData);
+      // TODO: Send to external logging service like Sentry or LogRocket
     }
   }
 

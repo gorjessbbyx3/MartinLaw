@@ -639,7 +639,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.sendFile(join(process.cwd(), filePath));
     } catch (error) {
       console.error("Download document error:", error);
-      res.status(500).json({ message: "Failed to download document" });
+      console.error('Document download error:', error);
+res.status(500).json({ 
+  message: "Failed to download document",
+  error: process.env.NODE_ENV === 'development' ? error.message : undefined
+});
     }
   });
 
