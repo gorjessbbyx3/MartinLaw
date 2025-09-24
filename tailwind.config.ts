@@ -44,36 +44,8 @@ export default {
         border: "var(--border)",
         input: "var(--input)",
         ring: "var(--ring)",
-        charcoal: {
-          50: "var(--charcoal-50)",
-          100: "var(--charcoal-100)",
-          500: "var(--charcoal-500)",
-          700: "var(--charcoal-700)",
-          900: "var(--charcoal-900)"
-        },
-        platinum: {
-          100: "var(--platinum-100)",
-          300: "var(--platinum-300)",
-          500: "var(--platinum-500)"
-        },
-        bronze: {
-          400: "var(--bronze-400)",
-          500: "var(--bronze-500)",
-          600: "var(--bronze-600)"
-        },
-        silicon: {
-          blue: "var(--silicon-blue)",
-          purple: "var(--silicon-purple)",
-          pink: "var(--silicon-pink)",
-          green: "var(--silicon-green)",
-          orange: "var(--silicon-orange)"
-        },
-        gradient: {
-          primary: "var(--gradient-primary)",
-          secondary: "var(--gradient-secondary)",
-          accent: "var(--gradient-accent)"
-        },
         navy: {
+          25: "#fafbfc",
           50: "var(--navy-50)",
           100: "var(--navy-100)",
           200: "var(--navy-200)",
