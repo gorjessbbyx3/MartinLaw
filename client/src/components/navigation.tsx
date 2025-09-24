@@ -48,8 +48,6 @@ export function Navigation() {
               {[
                 { id: 'home', label: 'Home' },
                 { id: 'about', label: 'About' },
-                { id: 'practice-areas', label: 'Practice Areas' },
-                { id: 'radio-show', label: 'Radio Show' },
                 { id: 'contact', label: 'Contact' }
               ].map((item) => (
                 <button 
@@ -111,8 +109,6 @@ export function Navigation() {
               {[
                 { id: 'home', label: 'Home' },
                 { id: 'about', label: 'About' },
-                { id: 'practice-areas', label: 'Practice Areas' },
-                { id: 'radio-show', label: 'Radio Show' },
                 { id: 'contact', label: 'Contact' }
               ].map((item) => (
                 <button 
